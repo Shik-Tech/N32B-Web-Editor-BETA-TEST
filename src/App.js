@@ -18,9 +18,12 @@ import {
 } from './presetTemplates';
 import Popup from 'react-popup';
 import defaultPreset from './presetTemplates/default/default.json';
-
+import logo from './components/images/shik-logo-white-orange_1024x1024.png';
 import './App.css';
 import './Popup.css';
+import { Container } from '@mui/system';
+import { AppBar, Box, Divider, Grid, IconButton, Menu, Stack, Toolbar, Typography } from '@mui/material';
+
 
 function App() {
   const appVersion = "v2.0.0";
@@ -155,78 +158,79 @@ function App() {
   }
 
   return (
-    <div className="App">
+    <Container maxWidth="lg">
       {!deviceIsConnected &&
         <ConnectDevice />
       }
       {deviceIsConnected &&
         <>
-          <div className="leftSide">
-            <div className="row spaceAround">
-              <div className="column">
-                <div className="title">N32B Editor</div>
-              </div>
-              <div className="column deviceName">
-                <label>Device:</label>
-                <div className="headerValue">{midiOutput.name}</div>
-              </div>
-              {/* <PresetSelect
+          <AppBar position="static">
+            <Container>
+              <Toolbar disableGutters>
+                <Stack direction="row" spacing={2}>
+                  <img src={logo} alt="SHIK Logo" height={48} />
+                  <div className="title">N32B Editor</div>
+                  <label>Device:</label>
+                  <div className="headerValue">{midiOutput.name}</div>
+                  {/* <PresetSelect
                 handlePresetChange={handlePresetChange}
                 handlePresetNameChange={handlePresetNameChange}
                 currentPresetIndex={currentPresetIndex}
                 presets={presets}
               /> */}
-            </div>
+                </Stack>
+              </Toolbar>
+            </Container>
+          </AppBar>
 
-            <div className="seperator"></div>
+          <Box sx={{ flexGrow: 1 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <N32B
+                  knobsData={currentPreset.knobs}
+                  knobsPerRow={knobsPerRow}
+                  selectedKnobIndex={selectedKnobIndex}
+                  setSelectedKnob={setSelectedKnobIndex}
+                />
+                <Version appVersion={appVersion} />
+              </Grid>
 
-            <N32B
-              knobsData={currentPreset.knobs}
-              knobsPerRow={knobsPerRow}
-              selectedKnobIndex={selectedKnobIndex}
-              setSelectedKnob={setSelectedKnobIndex}
-            />
-            <Version appVersion={appVersion} />
-          </div>
-          <div className="rightSide">
-            <div className="row">
-              <div className="title">
+              <Grid item xs={6}>
                 Editing Knob: <span className="currentKnob">{currentPreset.knobs[selectedKnobIndex].id}</span>
-              </div>
-              {/* {!isDualMode &&
+                {/* {!isDualMode &&
                 <label className="highResolution">
                   <input type="checkbox" checked={highResolution} onChange={handleHighResolutionChange} /> Hi-Res
                 </label>
               } */}
-            </div>
 
-            <div className="seperator"></div>
+                <Divider />
 
-            <div className="row flex-2">
-              <Editor
-                knobData={knobsData[selectedKnobIndex]}
-                handleKnobDataChange={handleKnobDataChange}
-                setIsPristine={setIsPristine}
-              />
-            </div>
+                <div className="row flex-2">
+                  <Editor
+                    knobData={knobsData[selectedKnobIndex]}
+                    handleKnobDataChange={handleKnobDataChange}
+                    setIsPristine={setIsPristine}
+                  />
+                </div>
 
-            <div className="seperator border"></div>
+                <Divider />
 
-            <div className="row">
-              <PresetOperations
-                // isDualMode={isDualMode}
-                currentPreset={currentPreset}
-                midiInput={midiInput}
-                midiOutput={midiOutput}
-                currentDevicePresetIndex={currentDevicePresetIndex}
-                handleLoadNewPreset={handleLoadNewPreset}
-                updateCurrentDevicePresetIndex={updateCurrentDevicePresetIndex}
-              />
-            </div>
-          </div>
+
+                <PresetOperations
+                  // isDualMode={isDualMode}
+                  currentPreset={currentPreset}
+                  midiInput={midiInput}
+                  midiOutput={midiOutput}
+                  currentDevicePresetIndex={currentDevicePresetIndex}
+                  handleLoadNewPreset={handleLoadNewPreset}
+                  updateCurrentDevicePresetIndex={updateCurrentDevicePresetIndex}
+                />
+              </Grid>
+            </Grid>
+          </Box>
         </>
       }
-    </div>
+    </Container >
   );
 }
 

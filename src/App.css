@@ -1,34 +1,31 @@
 html {
   margin: 0px;
   padding: 0px;
+  background-color: #000000;
+
 }
 
 .App {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  height: 100vh;
+  /* height: 100vh; */
 
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
+  /* display: flex; */
+  /* flex-wrap: wrap; */
+  /* flex-direction: row; */
 
-  background-color: #000000;
-  background-image: url('./components/images/shik-logo-white-orange_1024x1024.png');
+  /* background-image: url('./components/images/shik-logo-white-orange_1024x1024.png');
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-position: 40px bottom;
-  background-size: 10%;
+  background-size: 10%; */
 }
-
+/* 
 .title {
-  /* margin: 0 0 5px 0; */
-  /* padding: 0; */
   font-size: 18px;
   font-weight: bold;
 }
 
 .subtitle {
   margin: 0 0 3px 0;
-  /* padding: 0; */
   font-size: 14px;
   font-weight: bold;
 }
@@ -45,7 +42,7 @@ html {
   font-size: 14px;
   justify-self: flex-end;
   align-self: center;
-}
+} */
 
 .deviceNotConnected {
   color: #ffffff;
@@ -55,7 +52,7 @@ html {
   justify-content: center;
   align-items: center;
 }
-
+/* 
 .row {
   flex-direction: row;
   display: flex;
@@ -70,13 +67,12 @@ html {
 .column {
   flex-direction: column;
   display: flex;
-  /* flex-wrap: wrap; */
   justify-content: center;
 }
 
 .flex-2 {
   flex: 2;
-}
+} */
 
 .operationsContainer {
   display: flex;
@@ -88,7 +84,7 @@ html {
   color: #ff9c0e;
 }
 
-.leftSide {
+/* .leftSide {
   width: 594px;
   padding: 8px 10px;
   background-color: #131313;
@@ -97,7 +93,6 @@ html {
   flex-direction: column;
 }
 
-/* Main column */
 .rightSide {
   display: flex;
   flex: 1;
@@ -105,8 +100,8 @@ html {
   background: #131313;
   color: #ffffff;
   flex-direction: column;
-}
-
+} */
+/* 
 select,
 input {
   border: 2px solid #ffffff;
@@ -116,7 +111,6 @@ input {
   font-weight: bold;
   border-radius: 5px;
   text-align: center;
-  /* flex: 1; */
   justify-content: flex-start;
 }
 
@@ -167,25 +161,25 @@ button:active {
 
 button:disabled {
   color: gray;
-}
+} */
 
 /* .danger {
   color: #ff0e36;
 } */
 
-.danger:hover {
+/* .danger:hover {
   color: #bd003f;
 }
 
 .danger:active {
   color: #8a0219;
-}
+} */
 
 /* .good {
   color: #6eff0e;
 } */
 
-.good:hover {
+/* .good:hover {
   color: #2cbd00;
 }
 
@@ -235,21 +229,21 @@ button:disabled {
 }
 .presetSelect .buttonContainer {
   justify-content: flex-end;
-}
+} */
 
-.editorRow {
+/* .editorRow {
   margin-bottom: 5px;
   margin: 0px 5px 5px 5px;
-}
+} */
 
-.presetSelect .column {
+/* .presetSelect .column {
   flex: 1;
   margin: 3px;
 }
 .editorRow .column {
   flex: 1;
   margin: 5px;
-}
+} */
 
 .version {
   padding-top: 6px;
@@ -258,20 +252,7 @@ button:disabled {
   color: #505050;
 }
 
-.highResolution {
-  font-size: 0.8em;
-}
-
-.highResolution input {
-  width: 10px;
-  height: 10px;
-}
-
 .hiddenField {
   display: none !important;
 }
 
-#gear {
-  width: 80px;
-  height: 80px;
-}

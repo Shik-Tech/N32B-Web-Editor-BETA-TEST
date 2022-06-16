@@ -25,8 +25,8 @@ function ControlChangeDualForm({
                     <ChannelSelect channel={channel} handleChannelChange={handleChannelChange} />
                 </div>
             </div>
+            <div className="subtitle">Knob Message A:</div>
             <div className="row editorRow">
-                <label>Knob Message A:</label>
                 <div className="column">
                     <label>Control Number</label>
                     <input type="number" min={0} max={127} value={msb} onChange={handleMSBChange} />
@@ -40,8 +40,8 @@ function ControlChangeDualForm({
                 </div>
             </div>
 
+            <div className="subtitle">Knob Message B:</div>
             <div className="row editorRow">
-                <label>Knob Message B:</label>
                 <div className="column">
                     <label>Control Number</label>
                     <input type="number" min={0} max={127} value={lsb} onChange={handleLSBChange} />

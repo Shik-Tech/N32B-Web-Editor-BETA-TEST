@@ -1,3 +1,4 @@
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { map } from "lodash";
 import React from "react";
 import { validateValueRange } from "../PresetOperations/utils";
@@ -100,18 +101,22 @@ function Editor({ knobData, handleKnobDataChange, setIsPristine }) {
     ];
 
     return (
-        <div className="editorContainer">
-            <div className="row editorRow">
-                <label>Mode</label>
-                <select value={knobData.mode} onChange={handleModeSelect}>
-                    {map(Modes, mode =>
-                        <option value={mode.value} key={mode.value}>{mode.name}</option>
-                    )}
-                </select>
-            </div>
+        <FormControl fullWidth sx={{m: 2, minWidth: 120}} size="small">
+            <InputLabel id="mode-select-label">Mode</InputLabel>
+            <Select
+                labelId="mode-select-label"
+                id="mode-select"
+                label="Mode"
+                value={knobData.mode}
+                onChange={handleModeSelect}
+            >
+                {map(Modes, mode =>
+                    <MenuItem value={mode.value} key={mode.value}>{mode.name}</MenuItem>
+                )}
+            </Select>
 
             {displayForms[knobData.mode]}
-        </div>
+        </FormControl>
     );
 }
 

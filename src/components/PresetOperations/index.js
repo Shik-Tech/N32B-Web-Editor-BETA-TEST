@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { generateSysExFromPreset, generateSysExFromPreset_MK2 } from './utils';
 import { forEach } from 'lodash';
 import Popup from 'react-popup';
+import { Divider, Button, Container, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 // import webmidi from 'webmidi';
 
 // const { dialog } = window.electron;
@@ -91,72 +92,69 @@ function PresetOperations(props) {
     //     return;
     // }
 
-    // const handleLoadFromDevice = e => {
-    //     midiOutput.sendSysex(124, [7]);
-    // }
+    const handleLoadFromDevice = e => {
+        // midiOutput.sendSysex(124, [7]);
+    }
 
     return (
-        <div className="editorContainer">
-            <div className="row editorRow">
-                <div className="column">
-                    <button
-                        type="button"
-                        onClick={() => fileInput.current.click()}
-                    >
-                        Load Preset<br />
-                        to the editor
-                    </button>
-                    <input
-                        className="hiddenField"
-                        type="file"
-                        ref={fileInput}
-                        onChange={handleLoadPreset}
-                    />
-                </div>
-                <div className="column">
-                    <button
-                        type="button"
-                        onClick={handleSavePreset}
-                        className="good"
-                    >
-                        Save Preset<br />
-                        to your computer
-                    </button>
-                </div>
-            </div>
+        <Container>
+            <Button
+                variant="outlined"
+                onClick={() => fileInput.current.click()}
+            >
+                Load Preset<br />
+                to the editor
+            </Button>
+            <input
+                className="hiddenField"
+                type="file"
+                ref={fileInput}
+                onChange={handleLoadPreset}
+            />
+            <Button
+                variant="outlined"
+                color="secondary"
+                onClick={handleSavePreset}
+            >
+                Save Preset<br />
+                to your computer
+            </Button>
 
-            <div className="seperator"></div>
+            <Button
+                variant="outlined"
+                onClick={handleLoadFromDevice}
+            >
+                Load from Device
+            </Button>
 
-            {/* <div className="row editorRow">
-                <label>Load from device</label>
-                <button
-                    type="button"
-                    onClick={handleLoadFromDevice}
+            <Divider />
+
+            <FormControl size="small">
+                <InputLabel id="preset-select-label">Device Preset</InputLabel>
+                <Select
+                    labelId="preset-select-label"
+                    id="preset-select"
+                    label="Device Preset"
+                    variant="standard"
+                    value={currentDevicePresetIndex}
+                    onChange={handlePresetSelect}
                 >
-                    Load from Device
-                </button>
-            </div>
+                    <MenuItem value={0}>Preset 0</MenuItem>
+                    <MenuItem value={1}>Preset 1</MenuItem>
+                    <MenuItem value={2}>Preset 2</MenuItem>
+                    <MenuItem value={3}>Preset 3</MenuItem>
+                    <MenuItem value={4}>Preset 4</MenuItem>
+                </Select>
+            </FormControl>
 
-            <div className="seperator"></div> */}
+            <Button
+                variant="outlined"
+                onClick={handleSaveToDevice}
+            >
+                Write to Device
+            </Button>
+        </Container>
 
-            <div className="row editorRow">
-                <label>Write to:</label>
-                <select value={currentDevicePresetIndex} onChange={handlePresetSelect}>
-                    <option value={0}>Preset 0</option>
-                    <option value={1}>Preset 1</option>
-                    <option value={2}>Preset 2</option>
-                    <option value={3}>Preset 3</option>
-                    <option value={4}>Preset 4</option>
-                </select>
-                <button
-                    type="button"
-                    onClick={handleSaveToDevice}
-                    className="danger"
-                >
-                    Write to Device
-                </button>
-            </div>
-        </div>
     );
 }
 

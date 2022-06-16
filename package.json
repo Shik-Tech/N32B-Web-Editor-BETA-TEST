@@ -44,17 +44,19 @@
     ]
   },
   "dependencies": {
+    "@emotion/react": "^11.9.3",
+    "@emotion/styled": "^11.9.3",
+    "@fontsource/roboto": "^4.5.7",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/react-fontawesome": "^0.1.16",
-    "avrgirl-arduino": "^5.0.0",
+    "@mui/material": "^5.8.4",
     "fs-jetpack": "^4.0.0",
     "lodash": "^4.17.20",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-popup": "^0.11.0",
     "react-scripts": "^5.0.1",
-    "wait-on": "^6.0.0",
     "webmidi": "^3.0.20"
   },
   "devDependencies": {
