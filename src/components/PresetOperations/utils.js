@@ -3,7 +3,7 @@ import { forEach } from 'lodash';
 export function generateSysExFromPreset(currentPreset) {
     const messages = [];
     const {
-        highResolution,
+        // highResolution,
         knobs
     } = currentPreset;
 
@@ -22,13 +22,13 @@ export function generateSysExFromPreset(currentPreset) {
             // CC
             case 1:
                 knobMessage.push(msb);
-                knobMessage.push(highResolution ? msb + 32 : 0);
+                // knobMessage.push(highResolution ? msb + 32 : 0);
                 knobMessage.push(0);
                 break;
             // CC & Channel
             case 2:
                 knobMessage.push(msb);
-                knobMessage.push(highResolution ? msb + 32 : 0);
+                // knobMessage.push(highResolution ? msb + 32 : 0);
                 knobMessage.push(channel);
                 break;
             // NPRN
@@ -48,7 +48,7 @@ export function generateSysExFromPreset(currentPreset) {
     });
 
     messages.push([9, currentPreset.channel]);
-    messages.push([14, currentPreset.highResolution]);
+    // messages.push([14, currentPreset.highResolution]);
     messages.push([5, currentPreset.presetID]);
 
     return messages;
@@ -106,6 +106,7 @@ export function generateSysExFromPreset_MK2(currentPreset) {
     return messages;
 }
 
+// Accepts target obejct of input onChange event
 export function validateValueRange({ value, min, max }) {
     return Math.max(Number(min), Math.min(Number(max), Number(value)));
 }

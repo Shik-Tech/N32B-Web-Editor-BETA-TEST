@@ -1,35 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import { find } from 'lodash';
-import WebMidi from 'webmidi';
+import { WebMidi } from "webmidi";
 import {
   N32B,
-  HighResEditor,
-  DualModeEditor,
+  // HighResEditor,
+  // DualModeEditor,
+  Editor,
   PresetOperations,
   ConnectDevice,
-  PresetSelect,
+  // PresetSelect,
   Version
 } from './components';
-import { dualModePresets, highResPresets } from './presetTemplates';
+import {
+  // defaultsPresets,
+  // dualModePresets,
+  // highResPresets
+} from './presetTemplates';
 import Popup from 'react-popup';
+import defaultPreset from './presetTemplates/default/default.json';
 
 import './App.css';
 import './Popup.css';
 
 function App() {
-  const appVersion = "v1.1.0";
+  const appVersion = "v2.0.0";
   const knobsPerRow = 8;
 
-  const [selectedKnobIndex, setSelectedKnobIndex] = useState(0);
   const [deviceIsConnected, setDeviceIsConnected] = useState(false);
   const [midiInput, setMidiInput] = useState(null);
   const [midiOutput, setMidiOutput] = useState(null);
-  const [currentPreset, updatePreset] = useState();
-  const [currentPresetIndex, updateCurrentPresetIndex] = useState(0);
+  const [currentPreset, updatePreset] = useState(defaultPreset);
+  const [selectedKnobIndex, setSelectedKnobIndex] = useState(0);
+  // const [selectedKnobData, setSelectedKnobData] = useState(defaultPreset.knobs[0]);
+  const [knobsData, setKnobsData] = useState(defaultPreset.knobs);
+  // const [currentPresetIndex, updateCurrentPresetIndex] = useState(0);
   const [currentDevicePresetIndex, updateCurrentDevicePresetIndex] = useState(0);
   // const [currentPresetName, updatePresetName] = useState('');
-  const [highResolution, updateHighResolution] = useState(true);
-  const [isDualMode, setIsDualMode] = useState();
+  // const [highResolution, updateHighResolution] = useState(true);
   const [presets, setPresets] = useState([]);
   const [isPristine, setIsPristine] = useState(true);
 
@@ -39,14 +46,8 @@ function App() {
         console.log("WebMidi could not be enabled.", err);
       }
       WebMidi.addListener("connected", function (e) {
-        if (WebMidi.getInputByName("N32B MK2")) {
-          setIsDualMode(true);
-          setPresets(dualModePresets);
-          setMidiInput(WebMidi.getInputByName("N32B MK2"));
-          setMidiOutput(WebMidi.getOutputByName("N32B MK2"));
-        } else if (WebMidi.getInputByName("N32B")) {
-          setIsDualMode(false);
-          setPresets(highResPresets);
+        if (WebMidi.getInputByName("N32B")) {
+          // setPresets(defaultsPresets);
           setMidiInput(WebMidi.getInputByName("N32B"));
           setMidiOutput(WebMidi.getOutputByName("N32B"));
         }
@@ -75,11 +76,13 @@ function App() {
     }
   }, [midiInput, midiOutput]);
 
-  useEffect(() => {
-    if (presets.length > 0) {
-      updatePreset(presets[currentPresetIndex]);
-    }
-  }, [presets, currentPresetIndex]);
+
+  // useEffect(() => {
+  //   if (presets.length > 0) {
+  //     updatePreset(presets[currentPresetIndex]);
+  //   }
+  // }, [presets, currentPresetIndex]);
+
 
   useEffect(() => {
     if (midiOutput) {
@@ -92,39 +95,45 @@ function App() {
     }
   }, [currentDevicePresetIndex, midiOutput]);
 
-
   useEffect(() => {
     updatePreset(prev => ({
       ...prev,
-      highResolution
-    }));
-  }, [highResolution]);
+      knobs: [...knobsData]
+    }))
+  }, [knobsData]);
 
-  useEffect(() => {
-    const isExistingPreset = find(presets, preset => preset.presetName === 'User Custom');
-    if (!isExistingPreset) {
-      setPresets(prev => ([
-        {
-          ...currentPreset,
-          presetName: 'User Custom'
-        },
-        ...prev
-      ]));
-    }
-    updateCurrentPresetIndex(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPristine]);
+  // useEffect(() => {
+  //   const isExistingPreset = find(presets, preset => preset.presetName === 'User Custom');
+  //   if (!isExistingPreset) {
+  //     setPresets(prev => ([
+  //       {
+  //         ...currentPreset,
+  //         presetName: 'User Custom'
+  //       },
+  //       ...prev
+  //     ]));
+  //   }
+  //   updateCurrentPresetIndex(0);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [isPristine]);
 
-  const handlePresetChange = e => {
-    setIsPristine(true);
-    updateCurrentPresetIndex(parseInt(e.target.value));
+  // const handlePresetChange = e => {
+  //   setIsPristine(true);
+  //   updateCurrentPresetIndex(parseInt(e.target.value));
+  // }
+
+  function handleKnobDataChange(data) {
+    setKnobsData([
+      ...knobsData.slice(0, selectedKnobIndex),
+      {
+        ...knobsData[selectedKnobIndex],
+        ...data
+      },
+      ...knobsData.slice(selectedKnobIndex + 1)
+    ]);
   }
   const handleProgramChange = e => {
     updateCurrentDevicePresetIndex(e.data[1]);
-  }
-
-  const handleHighResolutionChange = e => {
-    updateHighResolution(!!e.target.checked);
   }
 
   const handleLoadNewPreset = preset => {
@@ -134,12 +143,12 @@ function App() {
     ]));
   }
 
-  const handlePresetNameChange = e => {
-    updatePreset(prev => ({
-      ...prev,
-      presetName: e.target.value
-    }));
-  }
+  // const handlePresetNameChange = e => {
+  //   updatePreset(prev => ({
+  //     ...prev,
+  //     presetName: e.target.value
+  //   }));
+  // }
 
   const handleSysex = e => {
     console.log(e);
@@ -161,12 +170,12 @@ function App() {
                 <label>Device:</label>
                 <div className="headerValue">{midiOutput.name}</div>
               </div>
-              <PresetSelect
+              {/* <PresetSelect
                 handlePresetChange={handlePresetChange}
                 handlePresetNameChange={handlePresetNameChange}
                 currentPresetIndex={currentPresetIndex}
                 presets={presets}
-              />
+              /> */}
             </div>
 
             <div className="seperator"></div>
@@ -184,39 +193,28 @@ function App() {
               <div className="title">
                 Editing Knob: <span className="currentKnob">{currentPreset.knobs[selectedKnobIndex].id}</span>
               </div>
-              {!isDualMode &&
+              {/* {!isDualMode &&
                 <label className="highResolution">
                   <input type="checkbox" checked={highResolution} onChange={handleHighResolutionChange} /> Hi-Res
                 </label>
-              }
+              } */}
             </div>
 
             <div className="seperator"></div>
 
             <div className="row flex-2">
-              {!isDualMode &&
-                <HighResEditor
-                  selectedKnobIndex={selectedKnobIndex}
-                  currentPreset={currentPreset}
-                  updatePreset={updatePreset}
-                  setIsPristine={setIsPristine}
-                />
-              }
-              {isDualMode &&
-                <DualModeEditor
-                  selectedKnobIndex={selectedKnobIndex}
-                  currentPreset={currentPreset}
-                  updatePreset={updatePreset}
-                  setIsPristine={setIsPristine}
-                />
-              }
+              <Editor
+                knobData={knobsData[selectedKnobIndex]}
+                handleKnobDataChange={handleKnobDataChange}
+                setIsPristine={setIsPristine}
+              />
             </div>
 
             <div className="seperator border"></div>
 
             <div className="row">
               <PresetOperations
-                isDualMode={isDualMode}
+                // isDualMode={isDualMode}
                 currentPreset={currentPreset}
                 midiInput={midiInput}
                 midiOutput={midiOutput}

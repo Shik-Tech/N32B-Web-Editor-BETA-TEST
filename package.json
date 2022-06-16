@@ -44,22 +44,22 @@
     ]
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.36",
-    "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "@fortawesome/fontawesome-svg-core": "^6.1.1",
+    "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/react-fontawesome": "^0.1.16",
     "avrgirl-arduino": "^5.0.0",
     "fs-jetpack": "^4.0.0",
     "lodash": "^4.17.20",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "react-popup": "^0.10.0",
-    "react-scripts": "^4.0.0",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-popup": "^0.11.0",
+    "react-scripts": "^5.0.1",
     "wait-on": "^6.0.0",
-    "webmidi": "^2.5.1"
+    "webmidi": "^3.0.20"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.5",
-    "@testing-library/react": "^12.1.2",
-    "@testing-library/user-event": "^13.5.0"
+    "@testing-library/react": "^13.3.0",
+    "@testing-library/user-event": "^14.2.0"
   }
 }

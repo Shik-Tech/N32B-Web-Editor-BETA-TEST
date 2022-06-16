@@ -1,0 +1,15 @@
+{
+    "short_name": "N32B Web Editor",
+    "name": "N32B Web Editor",
+    "icons": [
+      {
+        "src": "icon.png",
+        "type": "image/png",
+        "sizes": "512x512"
+      }
+    ],
+    "start_url": ".",
+    "display": "standalone",
+    "theme_color": "#000000",
+    "background_color": "#ffffff"
+  }

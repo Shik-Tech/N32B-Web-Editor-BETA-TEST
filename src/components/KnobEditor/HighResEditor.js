@@ -50,17 +50,17 @@ function HighResEditor({ selectedKnobIndex, currentPreset, updatePreset, setIsPr
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedKnobIndex]);
 
-    useEffect(() => {
-        if (currentPreset.highResolution && (typeState === 1 || typeState === 2)) {
-            setMaxValueRangeState(31);
-            if (msbState > 31) {
-                setMsbState(0);
-            }
-        } else {
-            setMaxValueRangeState(127);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentPreset.highResolution, typeState]);
+    // useEffect(() => {
+    //     if (currentPreset.highResolution && (typeState === 1 || typeState === 2)) {
+    //         setMaxValueRangeState(31);
+    //         if (msbState > 31) {
+    //             setMsbState(0);
+    //         }
+    //     } else {
+    //         setMaxValueRangeState(127);
+    //     }
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [currentPreset.highResolution, typeState]);
 
     function handleTypeSelect(e) {
         setIsPristine(false);

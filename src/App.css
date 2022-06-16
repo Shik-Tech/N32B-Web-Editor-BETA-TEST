@@ -141,6 +141,11 @@ input[type=file] {
   display: block;
 }
 
+input:disabled {
+  background-color: #a3a3a3;
+  color: #696969;
+}
+
 button {
   cursor: pointer;
   background-color: #1d1d1d;

@@ -4,13 +4,12 @@ import { forEach } from 'lodash';
 import Popup from 'react-popup';
 // import webmidi from 'webmidi';
 
-console.log(window.electron);
 // const { dialog } = window.electron;
 const jetpack = window.jetpack;
 
 function PresetOperations(props) {
     const {
-        isDualMode,
+        // isDualMode,
         currentPreset,
         // midiInput,
         // midiOutput,
@@ -55,8 +54,9 @@ function PresetOperations(props) {
 
     const handleSaveToDevice = e => {
         const action = function () {
-            const messages = isDualMode ?
-                generateSysExFromPreset_MK2(currentPreset) : generateSysExFromPreset(currentPreset);
+            // const messages = isDualMode ?
+            // generateSysExFromPreset_MK2(currentPreset) : generateSysExFromPreset(currentPreset);
+            const messages = generateSysExFromPreset(currentPreset);
             forEach(messages, message => {
                 // console.log(webmidi.outputs[0].sendSysex(32, message));
 
