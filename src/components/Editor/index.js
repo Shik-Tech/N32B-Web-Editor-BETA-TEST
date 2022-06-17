@@ -1,4 +1,5 @@
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { Divider, FormControl, Grid, InputLabel, MenuItem, Select, Stack } from "@mui/material";
+import { Container } from "@mui/system";
 import { map } from "lodash";
 import React from "react";
 import { validateValueRange } from "../PresetOperations/utils";
@@ -101,22 +102,26 @@ function Editor({ knobData, handleKnobDataChange, setIsPristine }) {
     ];
 
     return (
-        <FormControl fullWidth sx={{m: 2, minWidth: 120}} size="small">
-            <InputLabel id="mode-select-label">Mode</InputLabel>
-            <Select
-                labelId="mode-select-label"
-                id="mode-select"
-                label="Mode"
-                value={knobData.mode}
-                onChange={handleModeSelect}
-            >
-                {map(Modes, mode =>
-                    <MenuItem value={mode.value} key={mode.value}>{mode.name}</MenuItem>
-                )}
-            </Select>
-
+        <Stack
+            divider={<Divider variant="middle"  />}
+            spacing={2}
+        >
+            <FormControl fullWidth>
+                <InputLabel id="mode-select-label">Mode</InputLabel>
+                <Select
+                    labelId="mode-select-label"
+                    id="mode-select"
+                    label="Mode"
+                    value={knobData.mode}
+                    onChange={handleModeSelect}
+                >
+                    {map(Modes, mode =>
+                        <MenuItem value={mode.value} key={mode.value}>{mode.name}</MenuItem>
+                    )}
+                </Select>
+            </FormControl>
             {displayForms[knobData.mode]}
-        </FormControl>
+        </Stack>
     );
 }
 

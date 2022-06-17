@@ -183,51 +183,44 @@ function App() {
             </Container>
           </AppBar>
 
-          <Box sx={{ flexGrow: 1 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <N32B
-                  knobsData={currentPreset.knobs}
-                  knobsPerRow={knobsPerRow}
-                  selectedKnobIndex={selectedKnobIndex}
-                  setSelectedKnob={setSelectedKnobIndex}
-                />
-                <Version appVersion={appVersion} />
-              </Grid>
+          <Stack
+            direction="row"
+            divider={<Divider orientation="vertical" flexItem />}
+            spacing={4}
+          >
+            <Stack>
+              <N32B
+                knobsData={currentPreset.knobs}
+                knobsPerRow={knobsPerRow}
+                selectedKnobIndex={selectedKnobIndex}
+                setSelectedKnob={setSelectedKnobIndex}
+              />
+              <Version appVersion={appVersion} />
+            </Stack>
 
-              <Grid item xs={6}>
-                Editing Knob: <span className="currentKnob">{currentPreset.knobs[selectedKnobIndex].id}</span>
-                {/* {!isDualMode &&
-                <label className="highResolution">
-                  <input type="checkbox" checked={highResolution} onChange={handleHighResolutionChange} /> Hi-Res
-                </label>
-              } */}
+            <Stack
+              divider={<Divider />}
+              spacing={2}
+            >
+              Editing Knob: <span className="currentKnob">{currentPreset.knobs[selectedKnobIndex].id}</span>
 
-                <Divider />
+              <Editor
+                knobData={knobsData[selectedKnobIndex]}
+                handleKnobDataChange={handleKnobDataChange}
+                setIsPristine={setIsPristine}
+              />
 
-                <div className="row flex-2">
-                  <Editor
-                    knobData={knobsData[selectedKnobIndex]}
-                    handleKnobDataChange={handleKnobDataChange}
-                    setIsPristine={setIsPristine}
-                  />
-                </div>
-
-                <Divider />
-
-
-                <PresetOperations
-                  // isDualMode={isDualMode}
-                  currentPreset={currentPreset}
-                  midiInput={midiInput}
-                  midiOutput={midiOutput}
-                  currentDevicePresetIndex={currentDevicePresetIndex}
-                  handleLoadNewPreset={handleLoadNewPreset}
-                  updateCurrentDevicePresetIndex={updateCurrentDevicePresetIndex}
-                />
-              </Grid>
-            </Grid>
-          </Box>
+              <PresetOperations
+                // isDualMode={isDualMode}
+                currentPreset={currentPreset}
+                midiInput={midiInput}
+                midiOutput={midiOutput}
+                currentDevicePresetIndex={currentDevicePresetIndex}
+                handleLoadNewPreset={handleLoadNewPreset}
+                updateCurrentDevicePresetIndex={updateCurrentDevicePresetIndex}
+              />
+            </Stack>
+          </Stack>
         </>
       }
     </Container >

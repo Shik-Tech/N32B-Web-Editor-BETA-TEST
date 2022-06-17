@@ -1,4 +1,4 @@
-import { Checkbox, Container, FormControl, FormControlLabel, FormGroup, Grid, Input, InputLabel, TextField } from "@mui/material";
+import { Checkbox, Container, Divider, FormControl, FormControlLabel, FormGroup, Grid, Input, InputLabel, Stack, TextField } from "@mui/material";
 import React from "react";
 import ChannelSelect from "../Components/ChannelSelect";
 
@@ -15,38 +15,32 @@ function ControlChangeForm({
     } = currentKnob;
 
     return (
-        <Container>
-            <Grid container spacing={2}>
-                <Grid item xs={6}>
-                    <ChannelSelect channel={channel} handleChannelChange={handleChannelChange} />
-                </Grid>
+        <Stack
+            direction="row"
+            divider={<Divider orientation="vertical" flexItem />}
+            spacing={2}
+        >
+            <ChannelSelect channel={channel} handleChannelChange={handleChannelChange} />
 
-                <Grid item xs={4}>
-                    <FormControl fullWidth>
-                        <TextField
-                            label="Control Number"
-                            type="number"
-                            variant="standard"
-                            InputProps={{ inputProps: { min: 0, max: 127 } }}
-                            value={msb}
-                            onChange={handleMSBChange}
-                        />
-                    </FormControl>
-                </Grid>
-                <Grid item xs={2}>
+            <FormControl fullWidth>
+                <TextField
+                    label="Control Number"
+                    type="number"
 
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                checked={invert_a}
-                                onChange={handleInvertAChange}
-                            />
-                        }
-                        label="Invert" />
-                </Grid>
-            </Grid>
-        </Container>
-
+                    InputProps={{ inputProps: { min: 0, max: 127 } }}
+                    value={msb}
+                    onChange={handleMSBChange}
+                />
+            </FormControl>
+            <FormControlLabel
+                control={
+                    <Checkbox
+                        checked={invert_a}
+                        onChange={handleInvertAChange}
+                    />
+                }
+                label="Invert" />
+        </Stack>
     )
 }
 

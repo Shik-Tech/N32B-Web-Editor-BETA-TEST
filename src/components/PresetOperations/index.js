@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { generateSysExFromPreset, generateSysExFromPreset_MK2 } from './utils';
 import { forEach } from 'lodash';
 import Popup from 'react-popup';
-import { Divider, Button, Container, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Divider, Button, Container, FormControl, InputLabel, Select, MenuItem, Stack } from '@mui/material';
 // import webmidi from 'webmidi';
 
 // const { dialog } = window.electron;
@@ -97,64 +97,75 @@ function PresetOperations(props) {
     }
 
     return (
-        <Container>
-            <Button
-                variant="outlined"
-                onClick={() => fileInput.current.click()}
+        <Stack
+            spacing={2}
+        >
+            <Stack
+                direction="row"
+                spacing={2}
             >
-                Load Preset<br />
-                to the editor
-            </Button>
-            <input
-                className="hiddenField"
-                type="file"
-                ref={fileInput}
-                onChange={handleLoadPreset}
-            />
-            <Button
-                variant="outlined"
-                color="secondary"
-                onClick={handleSavePreset}
-            >
-                Save Preset<br />
-                to your computer
-            </Button>
+                <Button
+                    variant="outlined"
+                    onClick={() => fileInput.current.click()}
+                >
+                    Load Preset<br />
+                    to the editor
+                </Button>
+                <input
+                    className="hiddenField"
+                    type="file"
+                    ref={fileInput}
+                    onChange={handleLoadPreset}
+                />
+                <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={handleSavePreset}
+                >
+                    Save Preset<br />
+                    to your computer
+                </Button>
 
-            <Button
-                variant="outlined"
-                onClick={handleLoadFromDevice}
-            >
-                Load from Device
-            </Button>
+                <Button
+                    variant="outlined"
+                    onClick={handleLoadFromDevice}
+                >
+                    Load from Device
+                </Button>
+            </Stack>
 
             <Divider />
 
-            <FormControl size="small">
-                <InputLabel id="preset-select-label">Device Preset</InputLabel>
-                <Select
-                    labelId="preset-select-label"
-                    id="preset-select"
-                    label="Device Preset"
-                    variant="standard"
-                    value={currentDevicePresetIndex}
-                    onChange={handlePresetSelect}
-                >
-                    <MenuItem value={0}>Preset 0</MenuItem>
-                    <MenuItem value={1}>Preset 1</MenuItem>
-                    <MenuItem value={2}>Preset 2</MenuItem>
-                    <MenuItem value={3}>Preset 3</MenuItem>
-                    <MenuItem value={4}>Preset 4</MenuItem>
-                </Select>
-            </FormControl>
-
-            <Button
-                variant="outlined"
-                onClick={handleSaveToDevice}
+            <Stack
+                direction="row"
+                spacing={2}
             >
-                Write to Device
-            </Button>
-        </Container>
+                <FormControl size="small">
+                    <InputLabel id="preset-select-label">Device Preset</InputLabel>
+                    <Select
+                        labelId="preset-select-label"
+                        id="preset-select"
+                        label="Device Preset"
 
+                        value={currentDevicePresetIndex}
+                        onChange={handlePresetSelect}
+                    >
+                        <MenuItem value={0}>Preset 0</MenuItem>
+                        <MenuItem value={1}>Preset 1</MenuItem>
+                        <MenuItem value={2}>Preset 2</MenuItem>
+                        <MenuItem value={3}>Preset 3</MenuItem>
+                        <MenuItem value={4}>Preset 4</MenuItem>
+                    </Select>
+                </FormControl>
+
+                <Button
+                    variant="outlined"
+                    onClick={handleSaveToDevice}
+                >
+                    Write to Device
+                </Button>
+            </Stack>
+        </Stack>
     );
 }
 

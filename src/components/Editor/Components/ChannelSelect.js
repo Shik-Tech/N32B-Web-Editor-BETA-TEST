@@ -9,12 +9,12 @@ function ChannelSelect({ channel, handleChannelChange }) {
     }
     return (
         <FormControl fullWidth>
-            <InputLabel id="channel-select-label">Channel</InputLabel>
+            <InputLabel  id="channel-select-label">Channel</InputLabel>
             <Select
                 labelId="channel-select-label"
                 id="channel-select"
                 label="Channel"
-                variant="standard"
+                
                 value={channel}
                 onChange={handleChannelChange}
             >
