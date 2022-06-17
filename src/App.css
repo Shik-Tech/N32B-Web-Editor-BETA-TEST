@@ -1,48 +1,12 @@
-html {
-  margin: 0px;
-  padding: 0px;
-  background-color: #000000;
-
+html,
+body {
+  margin: 0;
+  padding: 0;
 }
-
-.App {
-  /* height: 100vh; */
-
-  /* display: flex; */
-  /* flex-wrap: wrap; */
-  /* flex-direction: row; */
-
-  /* background-image: url('./components/images/shik-logo-white-orange_1024x1024.png');
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-position: 40px bottom;
-  background-size: 10%; */
+body {
+  background-color: #2a2a2a; 
+  color: #ffffff;
 }
-/* 
-.title {
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.subtitle {
-  margin: 0 0 3px 0;
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.headerTitle2 {
-  font-size: 11px;
-  font-weight: bold;
-  justify-self: flex-end;
-  align-self: center;
-}
-
-.headerValue {
-  margin: 0 20px 5px 0;
-  font-size: 14px;
-  justify-self: flex-end;
-  align-self: center;
-} */
 
 .deviceNotConnected {
   color: #ffffff;
@@ -52,27 +16,6 @@ html {
   justify-content: center;
   align-items: center;
 }
-/* 
-.row {
-  flex-direction: row;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-
-.row.spaceAround {
-  justify-content: space-around;
-}
-
-.column {
-  flex-direction: column;
-  display: flex;
-  justify-content: center;
-}
-
-.flex-2 {
-  flex: 2;
-} */
 
 .operationsContainer {
   display: flex;
@@ -84,166 +27,6 @@ html {
   color: #ff9c0e;
 }
 
-/* .leftSide {
-  width: 594px;
-  padding: 8px 10px;
-  background-color: #131313;
-  color: #ffffff;
-  display: flex;
-  flex-direction: column;
-}
-
-.rightSide {
-  display: flex;
-  flex: 1;
-  padding: 8px 10px;
-  background: #131313;
-  color: #ffffff;
-  flex-direction: column;
-} */
-/* 
-select,
-input {
-  border: 2px solid #ffffff;
-  padding: 5px;
-  font-size: 0.9em;
-  outline: none;
-  font-weight: bold;
-  border-radius: 5px;
-  text-align: center;
-  justify-content: flex-start;
-}
-
-input {
-  height: 14px;
-}
-
-input[type=checkbox] {
-  height: 13px;
-  width: 13px;
-  cursor: pointer;
-  flex: none;
-}
-
-input[type=file] {
-  position: absolute;
-  top: 0;
-  right: 0;
-  filter: alpha(opacity=0);
-  opacity: 0;
-  cursor: inherit;
-  display: block;
-}
-
-input:disabled {
-  background-color: #a3a3a3;
-  color: #696969;
-}
-
-button {
-  cursor: pointer;
-  background-color: #1d1d1d;
-  outline: none;
-  border-style: solid;
-  border-width: 1px;
-  border-radius: 5px;
-  color: #ffffff;
-  padding: 8px;
-}
-
-button:hover {
-  color: #fdc06a;
-}
-
-button:active {
-  color: #bd6e00;
-}
-
-button:disabled {
-  color: gray;
-} */
-
-/* .danger {
-  color: #ff0e36;
-} */
-
-/* .danger:hover {
-  color: #bd003f;
-}
-
-.danger:active {
-  color: #8a0219;
-} */
-
-/* .good {
-  color: #6eff0e;
-} */
-
-/* .good:hover {
-  color: #2cbd00;
-}
-
-.good:active {
-  color: #028a02;
-}
-
-.seperator {
-  margin: 5px 0;
-}
-
-.seperator.horizon {
-  margin: 0 5px;
-}
-
-.seperator.border {
-  border-top: 2px solid #333333;
-}
-
-.seperator.border.horizon {
-  border-top: none;
-  border-right: 2px solid #333333;
-}
-
-.editorContainer {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  flex: 1;
-}
-
-.deviceName label,
-.presetSelect input,
-.presetSelect button,
-.presetSelect label,
-.presetSelect select,
-.editorContainer label,
-.editorContainer select {
-  display: flex;
-  align-items: center;
-  margin-bottom: 2px;
-  font-size: 0.7em;
-}
-
-.presetSelect {
-  align-content: flex-end;
-}
-.presetSelect .buttonContainer {
-  justify-content: flex-end;
-} */
-
-/* .editorRow {
-  margin-bottom: 5px;
-  margin: 0px 5px 5px 5px;
-} */
-
-/* .presetSelect .column {
-  flex: 1;
-  margin: 3px;
-}
-.editorRow .column {
-  flex: 1;
-  margin: 5px;
-} */
 
 .version {
   padding-top: 6px;

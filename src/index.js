@@ -1,7 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import '@fontsource/roboto/300.css';
-import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -21,7 +20,7 @@ root.render(
   <React.StrictMode>
     <ThemeProvider theme={darkTheme}>
       <Popup />
-      <App tab="home" />
+      <App />
     </ThemeProvider>
   </React.StrictMode>
 );

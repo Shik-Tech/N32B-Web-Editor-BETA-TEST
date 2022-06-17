@@ -1,4 +1,12 @@
 import React from "react";
+import {
+    Checkbox,
+    Divider,
+    FormControl,
+    FormControlLabel,
+    Stack,
+    TextField
+} from "@mui/material";
 import ChannelSelect from "../Components/ChannelSelect";
 
 function ControlChangeRPNForm({
@@ -6,7 +14,7 @@ function ControlChangeRPNForm({
     handleChannelChange,
     handleMSBChange,
     handleLSBChange,
-    handleInvertAChange
+    handleInvertValueAChange
 }) {
     const {
         channel,
@@ -16,29 +24,45 @@ function ControlChangeRPNForm({
     } = currentKnob;
 
     return (
-        <div className="row editorRow">
-            <div className="column">
-                <label>Channel</label>
-                <ChannelSelect channel={channel} handleChannelChange={handleChannelChange} />
-            </div>
+        <Stack
+            divider={<Divider variant="middle" />}
+            spacing={2}
+        >
+            <Stack
+                direction="row"
+                divider={<Divider orientation="vertical" flexItem />}
+                spacing={2}
+            >
+                <FormControl fullWidth>
+                    <TextField
+                        label="MSB"
+                        type="number"
 
-            <div className="column">
-                <label>Control Number</label>
-                <div className="row spaceAround">
-                    <label>MSB</label>
-                    <input type="number" min={0} max={127} value={msb} onChange={handleMSBChange} />
-                    <label>LSB</label>
-                    <input type="number" min={0} max={127} value={lsb} onChange={handleLSBChange} />
-                </div>
-            </div>
+                        InputProps={{ inputProps: { min: 0, max: 127 } }}
+                        value={msb}
+                        onChange={handleMSBChange}
+                    />
+                </FormControl>
+                <FormControl fullWidth>
+                    <TextField
+                        label="LSB"
+                        type="number"
 
-            <div className="column">
-                <label>
-                    <input type="checkbox" checked={invert_a} onChange={handleInvertAChange} />
-                    Invert
-                </label>
-            </div>
-        </div>
+                        InputProps={{ inputProps: { min: 0, max: 127 } }}
+                        value={lsb}
+                        onChange={handleLSBChange}
+                    />
+                </FormControl>
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={invert_a}
+                            onChange={handleInvertValueAChange}
+                        />
+                    }
+                    label="Invert" />
+            </Stack>
+        </Stack>
     )
 }
 

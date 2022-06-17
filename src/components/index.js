@@ -1,7 +1,7 @@
 import N32B from './N32B';
 import Knobs from './Knobs';
 // import { HighResEditor, DualModeEditor } from './KnobEditor';
-import Editor from './Editor';
+import Editor from './Editor/Editor';
 import PresetOperations from './PresetOperations';
 import ConnectDevice from './ConnectDevice';
 import PresetSelect from './PresetSelect';

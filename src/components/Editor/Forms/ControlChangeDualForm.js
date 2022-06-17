@@ -1,16 +1,21 @@
 import React from "react";
-import ChannelSelect from "../Components/ChannelSelect";
+import {
+    Checkbox,
+    Divider,
+    FormControl,
+    FormControlLabel,
+    Stack,
+    TextField
+} from "@mui/material";
 
 function ControlChangeDualForm({
     currentKnob,
-    handleChannelChange,
     handleMSBChange,
     handleLSBChange,
-    handleInvertAChange,
-    handleInvertBChange
+    handleInvertValueAChange,
+    handleInvertValueBChange
 }) {
     const {
-        channel,
         msb,
         lsb,
         invert_a,
@@ -18,43 +23,60 @@ function ControlChangeDualForm({
     } = currentKnob;
 
     return (
-        <div className="column">
-            <div className="row editorRow">
-                <div className="column">
-                    <label>Channel</label>
-                    <ChannelSelect channel={channel} handleChannelChange={handleChannelChange} />
-                </div>
-            </div>
-            <div className="subtitle">Knob Message A:</div>
-            <div className="row editorRow">
-                <div className="column">
-                    <label>Control Number</label>
-                    <input type="number" min={0} max={127} value={msb} onChange={handleMSBChange} />
-                </div>
+        <Stack
+            divider={<Divider variant="middle" />}
+            spacing={2}
+        >
+            <Stack
+                direction="row"
+                divider={<Divider orientation="vertical" flexItem />}
+                spacing={2}
+            >
+                <FormControl fullWidth>
+                    <TextField
+                        label="Control Number A"
+                        type="number"
 
-                <div className="column">
-                    <label>
-                        <input type="checkbox" checked={invert_a} onChange={handleInvertAChange} />
-                        Invert
-                    </label>
-                </div>
-            </div>
+                        InputProps={{ inputProps: { min: 0, max: 127 } }}
+                        value={msb}
+                        onChange={handleMSBChange}
+                    />
+                </FormControl>
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={invert_a}
+                            onChange={handleInvertValueAChange}
+                        />
+                    }
+                    label="Invert" />
+            </Stack>
 
-            <div className="subtitle">Knob Message B:</div>
-            <div className="row editorRow">
-                <div className="column">
-                    <label>Control Number</label>
-                    <input type="number" min={0} max={127} value={lsb} onChange={handleLSBChange} />
-                </div>
+            <Stack
+                direction="row"
+                divider={<Divider orientation="vertical" flexItem />}
+                spacing={2}
+            >
+                <FormControl fullWidth>
+                    <TextField
+                        label="Control Number B"
+                        type="number"
 
-                <div className="column">
-                    <label>
-                        <input type="checkbox" checked={invert_b} onChange={handleInvertBChange} />
-                        Invert
-                    </label>
-                </div>
-            </div>
-        </div>
+                        InputProps={{ inputProps: { min: 0, max: 127 } }}
+                        value={lsb}
+                        onChange={handleLSBChange}
+                    />
+                </FormControl>
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={invert_b}
+                            onChange={handleInvertValueBChange}
+                        />
+                    }
+                    label="Invert" />
+            </Stack>
+        </Stack>
     )
 }
 

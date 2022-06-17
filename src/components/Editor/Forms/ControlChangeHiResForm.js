@@ -1,43 +1,53 @@
+import { Checkbox, Divider, FormControl, FormControlLabel, Stack, TextField } from "@mui/material";
 import React from "react";
-import ChannelSelect from "../Components/ChannelSelect";
 
 function ControlChangeHiResForm({
     currentKnob,
-    handleChannelChange,
     handleHiResChange,
-    handleInvertAChange
+    handleInvertValueAChange
 }) {
     const {
-        channel,
         msb,
         lsb,
         invert_a
     } = currentKnob;
 
     return (
-        <div className="row editorRow">
-            <div className="column">
-                <label>Channel</label>
-                <ChannelSelect channel={channel} handleChannelChange={handleChannelChange} />
-            </div>
+        <Stack
+            direction="row"
+            divider={<Divider orientation="vertical" flexItem />}
+            spacing={2}
+        >
 
-            <div className="column">
-                <label>Control Number</label>
-                <div className="row spaceAround">
-                    <label>MSB</label>
-                    <input type="number" min={0} max={31} value={msb} onChange={handleHiResChange} />
-                    <label>LSB</label>
-                    <input type="number" min={0} max={31} value={lsb} disabled />
-                </div>
-            </div>
+            <FormControl fullWidth>
+                <TextField
+                    label="MSB"
+                    type="number"
 
-            <div className="column">
-                <label>
-                    <input type="checkbox" checked={invert_a} onChange={handleInvertAChange} />
-                    Invert
-                </label>
-            </div>
-        </div>
+                    InputProps={{ inputProps: { min: 0, max: 31 } }}
+                    value={msb}
+                    onChange={handleHiResChange}
+                />
+            </FormControl>
+            <FormControl fullWidth>
+                <TextField
+                    label="LSB"
+                    type="number"
+                    disabled={true}
+                    InputProps={{ inputProps: { min: 0, max: 31 } }}
+                    value={lsb}
+                />
+            </FormControl>
+
+            <FormControlLabel
+                control={
+                    <Checkbox
+                        checked={invert_a}
+                        onChange={handleInvertValueAChange}
+                    />
+                }
+                label="Invert" />
+        </Stack>
     )
 }
 

@@ -22,7 +22,16 @@ import logo from './components/images/shik-logo-white-orange_1024x1024.png';
 import './App.css';
 import './Popup.css';
 import { Container } from '@mui/system';
-import { AppBar, Box, Divider, Grid, IconButton, Menu, Stack, Toolbar, Typography } from '@mui/material';
+import {
+  AppBar,
+  Box,
+  Divider,
+  Stack,
+  Toolbar,
+  Typography
+} from '@mui/material';
+import { validateValueRange } from './components/PresetOperations/utils';
+import { ModeIndexes } from './components/Editor/Modes';
 
 
 function App() {
@@ -157,21 +166,81 @@ function App() {
     console.log(e);
   }
 
+  function handleModeSelect(e) {
+    let newData = {
+      mode: parseInt(e.target.value)
+    };
+    if (newData.mode === ModeIndexes.KNOB_MODE_HIRES) {
+      if (knobsData[selectedKnobIndex].msb > 31) {
+        newData = {
+          ...newData,
+          msb: 0,
+          lsb: 32
+        }
+      } else {
+        newData = {
+          ...newData,
+          lsb: knobsData[selectedKnobIndex].msb + 32
+        }
+      }
+    }
+    handleKnobDataChange(newData);
+  }
+
+  function handleChannelChange(e) {
+    handleKnobDataChange({
+      channel: parseInt(e.target.value)
+    });
+  }
+
+  function handleMSBChange(e) {
+    handleKnobDataChange({
+      msb: validateValueRange(e.target)
+    });
+  }
+  function handleLSBChange(e) {
+    handleKnobDataChange({
+      lsb: validateValueRange(e.target)
+    });
+  }
+
+  function handleHiResChange(e) {
+    handleKnobDataChange({
+      msb: validateValueRange(e.target),
+      lsb: validateValueRange(e.target) + 32
+    });
+  }
+
+  function handleInvertValueAChange(e) {
+    handleKnobDataChange({
+      invert_a: e.target.checked
+    });
+  }
+
+  function handleInvertValueBChange(e) {
+    handleKnobDataChange({
+      invert_b: e.target.checked
+    });
+  }
+
   return (
     <Container maxWidth="lg">
       {!deviceIsConnected &&
         <ConnectDevice />
       }
       {deviceIsConnected &&
-        <>
+        <Box sx={{ flexGrow: 1 }}>
           <AppBar position="static">
             <Container>
               <Toolbar disableGutters>
                 <Stack direction="row" spacing={2}>
                   <img src={logo} alt="SHIK Logo" height={48} />
-                  <div className="title">N32B Editor</div>
-                  <label>Device:</label>
-                  <div className="headerValue">{midiOutput.name}</div>
+                  <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    N32B Editor
+                  </Typography>
+                  <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    Device: {midiOutput.name}
+                  </Typography>
                   {/* <PresetSelect
                 handlePresetChange={handlePresetChange}
                 handlePresetNameChange={handlePresetNameChange}
@@ -187,6 +256,7 @@ function App() {
             direction="row"
             divider={<Divider orientation="vertical" flexItem />}
             spacing={4}
+            sx={{ mt: 2 }}
           >
             <Stack>
               <N32B
@@ -202,12 +272,20 @@ function App() {
               divider={<Divider />}
               spacing={2}
             >
-              Editing Knob: <span className="currentKnob">{currentPreset.knobs[selectedKnobIndex].id}</span>
+              <Typography variant="h5" component="div" gutterBottom>
+                Editing Knob: <span className="currentKnob">{currentPreset.knobs[selectedKnobIndex].id}</span>
+              </Typography>
 
               <Editor
-                knobData={knobsData[selectedKnobIndex]}
+                currentKnob={knobsData[selectedKnobIndex]}
                 handleKnobDataChange={handleKnobDataChange}
-                setIsPristine={setIsPristine}
+                handleChannelChange={handleChannelChange}
+                handleMSBChange={handleMSBChange}
+                handleLSBChange={handleLSBChange}
+                handleInvertValueAChange={handleInvertValueAChange}
+                handleInvertValueBChange={handleInvertValueBChange}
+                handleHiResChange={handleHiResChange}
+                handleModeSelect={handleModeSelect}
               />
 
               <PresetOperations
@@ -221,7 +299,7 @@ function App() {
               />
             </Stack>
           </Stack>
-        </>
+        </Box>
       }
     </Container >
   );
