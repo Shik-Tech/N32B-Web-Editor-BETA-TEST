@@ -1,7 +1,6 @@
 import React from "react";
 import {
     Checkbox,
-    Divider,
     FormControl,
     FormControlLabel,
     Stack,
@@ -24,7 +23,6 @@ function ControlChangeDualForm({
 
     return (
         <Stack
-            divider={<Divider variant="middle" />}
             spacing={2}
         >
             <Stack

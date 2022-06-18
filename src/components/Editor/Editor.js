@@ -1,4 +1,4 @@
-import { Divider, FormControl, InputLabel, MenuItem, Select, Stack } from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select, Stack } from "@mui/material";
 import { map } from "lodash";
 import React from "react";
 import ChannelSelect from "./Components/ChannelSelect";

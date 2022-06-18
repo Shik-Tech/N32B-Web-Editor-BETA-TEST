@@ -1,4 +1,10 @@
-import { Checkbox, Divider, FormControl, FormControlLabel, Stack, TextField } from "@mui/material";
+import {
+    Checkbox,
+    FormControl,
+    FormControlLabel,
+    Stack,
+    TextField
+} from "@mui/material";
 import React from "react";
 
 function ControlChangeHiResForm({
@@ -17,7 +23,6 @@ function ControlChangeHiResForm({
             direction="row"
             spacing={2}
         >
-
             <FormControl fullWidth>
                 <TextField
                     label="MSB"

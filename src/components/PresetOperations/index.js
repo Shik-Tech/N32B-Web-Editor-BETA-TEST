@@ -1,9 +1,8 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { generateSysExFromPreset } from './utils';
 import { forEach } from 'lodash';
 import Popup from 'react-popup';
 import {
-    Divider,
     Button,
     FormControl,
     InputLabel,
@@ -13,11 +12,11 @@ import {
     Typography
 } from '@mui/material';
 import DownloadingRoundedIcon from '@mui/icons-material/DownloadingRounded';
-import PriorityHighRoundedIcon from '@mui/icons-material/PriorityHighRounded';
+import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
+import { Box } from '@mui/system';
 
 // import webmidi from 'webmidi';
 
-// const { dialog } = window.electron;
 const jetpack = window.jetpack;
 
 function PresetOperations(props) {
@@ -83,10 +82,12 @@ function PresetOperations(props) {
         <Stack
             spacing={2}
         >
-            <Typography>
-                <PriorityHighRoundedIcon sx={{ fontSize: 30, mb: -1 }} color="warning" />
-                After setting all the knobs, please choose the preset slot you wish to save this setup on, than click "Update".
-            </Typography>
+            <Box>
+                <Typography variant="body2" paragraph sx={{color: '#ffa726', border: '2px solid', borderRadius: 1, p:2}}>
+                    <WarningAmberRoundedIcon sx={{ fontSize: 30, mb: -1, mr: 1 }} color="warning" /> Please set all the knobs before updating the device.</Typography>
+                <Typography paragraph>please choose the preset slot you wish to save this setup on, than click "Update".
+                </Typography>
+            </Box>
 
             <Stack
                 direction="row"
