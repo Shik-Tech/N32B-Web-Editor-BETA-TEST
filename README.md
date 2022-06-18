@@ -8,17 +8,6 @@ You can find more information in our [website](https://shik.tech).
 ## How does it look?
 ![](N32B-Editor.png)
 
-## The Electron Project
-
-### `yarn`
-Will install all dependencies<br />
-
-### `yarn dev`
-Runs the electron app in the development mode.
-
-### `yarn dist`
-Builds the react app and immidiatly builds the electron app to the `dist` folder<br />
-
 ## The React Project
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
