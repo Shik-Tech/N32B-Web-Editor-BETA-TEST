@@ -27,6 +27,56 @@ body {
   color: #ff9c0e;
 }
 
+.N32B {
+  background-image: url('./components/N32B/n32b-device.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 605px;
+  height: 404px;
+  min-width: 605px;
+}
+
+
+.knobContainer {
+  position: relative;
+}
+.knob {
+  border: 2px solid transparent;
+  height: 34px;
+  width: 34px;
+  border-radius: 18px;
+  cursor: pointer;
+}
+.knobId {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #000;
+  font-size: 9px;
+  width: 10px;
+  height: 10px;
+  top: -17px;
+  left: -7px;
+  padding: 4px;
+  border-radius: 8px;
+
+}
+.knob-selected .knobId {
+  color: #000;
+  background-color: rgba(255, 156, 14, 0.4);
+  box-shadow: 0px 0px 5px 5px rgba(255, 156, 14, 0.3) !important;
+}
+
+.knob:hover {
+  box-shadow: 0px 0px 5px 5px rgba(80, 48, 4, 0.2);
+}
+
+.knob-selected .knob{
+  /* border-color: #ff9c0e; */
+  box-shadow: 0px 0px 8px 8px rgba(255, 156, 14, 0.5) !important;
+}
+
 
 .version {
   padding-top: 6px;

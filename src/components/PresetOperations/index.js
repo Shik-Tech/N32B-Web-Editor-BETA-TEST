@@ -1,8 +1,20 @@
 import React, { useRef } from 'react';
-import { generateSysExFromPreset, generateSysExFromPreset_MK2 } from './utils';
+import { generateSysExFromPreset } from './utils';
 import { forEach } from 'lodash';
 import Popup from 'react-popup';
-import { Divider, Button, Container, FormControl, InputLabel, Select, MenuItem, Stack } from '@mui/material';
+import {
+    Divider,
+    Button,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    Stack,
+    Typography
+} from '@mui/material';
+import DownloadingRoundedIcon from '@mui/icons-material/DownloadingRounded';
+import PriorityHighRoundedIcon from '@mui/icons-material/PriorityHighRounded';
+
 // import webmidi from 'webmidi';
 
 // const { dialog } = window.electron;
@@ -18,40 +30,11 @@ function PresetOperations(props) {
         currentDevicePresetIndex,
         updateCurrentDevicePresetIndex
     } = props;
-    const fileInput = useRef(null);
 
     const handlePresetSelect = e => {
         updateCurrentDevicePresetIndex(parseInt(e.target.value));
     }
 
-    const handleLoadPreset = e => {
-        const reader = new FileReader();
-        if (fileInput.current.files.length > 0) {
-            const file = fileInput.current.files[0];
-            // updatePresetName(file.name);
-            reader.onload = (event => {
-                const preset = JSON.parse(event.target.result);
-                handleLoadNewPreset(preset);
-                updateCurrentDevicePresetIndex(0);
-            });
-            reader.readAsText(file);
-        }
-    }
-
-    const handleSavePreset = e => {
-        // const presetFilePath = dialog.showSaveDialogSync({
-        //     title: 'Save Preset',
-        //     buttonLabel: 'Save Preset'
-        // });
-        // if (presetFilePath) {
-        //     try {
-        //         jetpack.write(presetFilePath, currentPreset);
-        //     }
-        //     catch (err) {
-        //         console.log('error: ', err);
-        //     }
-        // }
-    }
 
     const handleSaveToDevice = e => {
         const action = function () {
@@ -100,53 +83,22 @@ function PresetOperations(props) {
         <Stack
             spacing={2}
         >
-            <Stack
-                direction="row"
-                spacing={2}
-            >
-                <Button
-                    variant="outlined"
-                    onClick={() => fileInput.current.click()}
-                >
-                    Load Preset<br />
-                    to the editor
-                </Button>
-                <input
-                    className="hiddenField"
-                    type="file"
-                    ref={fileInput}
-                    onChange={handleLoadPreset}
-                />
-                <Button
-                    variant="outlined"
-                    color="secondary"
-                    onClick={handleSavePreset}
-                >
-                    Save Preset<br />
-                    to your computer
-                </Button>
-
-                <Button
-                    variant="outlined"
-                    onClick={handleLoadFromDevice}
-                >
-                    Load from Device
-                </Button>
-            </Stack>
-
-            <Divider />
+            <Typography>
+                <PriorityHighRoundedIcon sx={{ fontSize: 30, mb: -1 }} color="warning" />
+                After setting all the knobs, please choose the preset slot you wish to save this setup on, than click "Update".
+            </Typography>
 
             <Stack
                 direction="row"
                 spacing={2}
             >
-                <FormControl size="small">
-                    <InputLabel id="preset-select-label">Device Preset</InputLabel>
+                <FormControl fullWidth>
+                    <InputLabel id="preset-select-label">N32B Preset</InputLabel>
                     <Select
                         labelId="preset-select-label"
                         id="preset-select"
                         label="Device Preset"
-
+                        color='warning'
                         value={currentDevicePresetIndex}
                         onChange={handlePresetSelect}
                     >
@@ -158,11 +110,13 @@ function PresetOperations(props) {
                     </Select>
                 </FormControl>
 
-                <Button
-                    variant="outlined"
+                <Button fullWidth
+                    variant="contained"
+                    color="warning"
+                    endIcon={<DownloadingRoundedIcon />}
                     onClick={handleSaveToDevice}
                 >
-                    Write to Device
+                    Update
                 </Button>
             </Stack>
         </Stack>

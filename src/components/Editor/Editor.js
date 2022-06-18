@@ -28,7 +28,6 @@ function Editor(props) {
 
     return (
         <Stack
-            divider={<Divider variant="middle" />}
             spacing={2}
         >
             <FormControl fullWidth>

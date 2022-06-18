@@ -15,7 +15,6 @@ function ControlChangeHiResForm({
     return (
         <Stack
             direction="row"
-            divider={<Divider orientation="vertical" flexItem />}
             spacing={2}
         >
 

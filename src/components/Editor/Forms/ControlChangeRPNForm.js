@@ -7,17 +7,14 @@ import {
     Stack,
     TextField
 } from "@mui/material";
-import ChannelSelect from "../Components/ChannelSelect";
 
 function ControlChangeRPNForm({
     currentKnob,
-    handleChannelChange,
     handleMSBChange,
     handleLSBChange,
     handleInvertValueAChange
 }) {
     const {
-        channel,
         msb,
         lsb,
         invert_a
@@ -30,7 +27,6 @@ function ControlChangeRPNForm({
         >
             <Stack
                 direction="row"
-                divider={<Divider orientation="vertical" flexItem />}
                 spacing={2}
             >
                 <FormControl fullWidth>

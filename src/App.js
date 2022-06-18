@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { find } from 'lodash';
 import { WebMidi } from "webmidi";
 import {
@@ -18,18 +18,21 @@ import {
 } from './presetTemplates';
 import Popup from 'react-popup';
 import defaultPreset from './presetTemplates/default/default.json';
-import logo from './components/images/shik-logo-white-orange_1024x1024.png';
+import logo from './components/images/shik-logo-small.png';
 import './App.css';
 import './Popup.css';
 import { Container } from '@mui/system';
 import {
   AppBar,
   Box,
+  Button,
   Divider,
   Stack,
   Toolbar,
   Typography
 } from '@mui/material';
+import UploadFileRoundedIcon from '@mui/icons-material/UploadFileRounded';
+import SimCardDownloadRoundedIcon from '@mui/icons-material/SimCardDownloadRounded';
 import { validateValueRange } from './components/PresetOperations/utils';
 import { ModeIndexes } from './components/Editor/Modes';
 
@@ -134,6 +137,37 @@ function App() {
   //   updateCurrentPresetIndex(parseInt(e.target.value));
   // }
 
+  const fileInput = useRef(null);
+
+  const handleLoadPreset = e => {
+    const reader = new FileReader();
+    if (fileInput.current.files.length > 0) {
+      const file = fileInput.current.files[0];
+      // updatePresetName(file.name);
+      reader.onload = (event => {
+        const preset = JSON.parse(event.target.result);
+        handleLoadNewPreset(preset);
+        updateCurrentDevicePresetIndex(0);
+      });
+      reader.readAsText(file);
+    }
+  }
+
+  const handleSavePreset = e => {
+    // const presetFilePath = dialog.showSaveDialogSync({
+    //     title: 'Save Preset',
+    //     buttonLabel: 'Save Preset'
+    // });
+    // if (presetFilePath) {
+    //     try {
+    //         jetpack.write(presetFilePath, currentPreset);
+    //     }
+    //     catch (err) {
+    //         console.log('error: ', err);
+    //     }
+    // }
+  }
+
   function handleKnobDataChange(data) {
     setKnobsData([
       ...knobsData.slice(0, selectedKnobIndex),
@@ -229,27 +263,74 @@ function App() {
         <ConnectDevice />
       }
       {deviceIsConnected &&
-        <Box sx={{ flexGrow: 1 }}>
-          <AppBar position="static">
-            <Container>
-              <Toolbar disableGutters>
-                <Stack direction="row" spacing={2}>
-                  <img src={logo} alt="SHIK Logo" height={48} />
-                  <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Box>
+          <AppBar position="static" >
+            <Toolbar variant='dense'>
+              <Stack direction="row" spacing={2} sx={{ flexGrow: 1 }}>
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  sx={{ flexGrow: 1, mt: 1 }}
+                >
+                  <Box
+                    component="img"
+                    alt="SHIK logo"
+                    src={logo}
+                    sx={{
+                      height: 20
+                    }}
+                  />
+                  <Typography component="div">
                     N32B Editor
                   </Typography>
-                  <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                    Device: {midiOutput.name}
-                  </Typography>
-                  {/* <PresetSelect
+                </Stack>
+
+                <Stack
+                  direction="row"
+                  spacing={2}
+                >
+                  <Button
+                    fullWidth
+                    variant="outlined"
+                    endIcon={<UploadFileRoundedIcon />}
+                    onClick={() => fileInput.current.click()}
+                  >
+                    Load
+                  </Button>
+                  <input
+                    className="hiddenField"
+                    type="file"
+                    ref={fileInput}
+                    onChange={handleLoadPreset}
+                  />
+                  <Button
+                    fullWidth
+                    variant="outlined"
+                    color="success"
+                    endIcon={<SimCardDownloadRoundedIcon />}
+                    onClick={handleSavePreset}
+                  >
+                    Save
+                  </Button>
+
+                  {/* <Button
+                    variant="outlined"
+                    endIcon={<DownloadingRoundedIcon />}
+                    onClick={handleLoadFromDevice}
+                >
+                    Load from Device
+                </Button> */}
+                </Stack>
+
+
+                {/* <PresetSelect
                 handlePresetChange={handlePresetChange}
                 handlePresetNameChange={handlePresetNameChange}
                 currentPresetIndex={currentPresetIndex}
                 presets={presets}
               /> */}
-                </Stack>
-              </Toolbar>
-            </Container>
+              </Stack>
+            </Toolbar>
           </AppBar>
 
           <Stack
@@ -259,6 +340,17 @@ function App() {
             sx={{ mt: 2 }}
           >
             <Stack>
+              <Stack
+                direction="row"
+                sx={{ mb: 1 }}
+              >
+                <Typography component="div" sx={{ flexGrow: 1 }}>
+                  N32B Editor
+                </Typography>
+                <Typography component="div" sx={{ flexGrow: 1, textAlign: 'right' }}>
+                  Device: {midiOutput.name}
+                </Typography>
+              </Stack>
               <N32B
                 knobsData={currentPreset.knobs}
                 knobsPerRow={knobsPerRow}
@@ -269,6 +361,7 @@ function App() {
             </Stack>
 
             <Stack
+              sx={{ flexGrow: 1 }}
               divider={<Divider />}
               spacing={2}
             >
