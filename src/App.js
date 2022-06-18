@@ -259,37 +259,35 @@ function App() {
 
   return (
     <Container maxWidth="lg">
-      {!deviceIsConnected &&
-        <ConnectDevice />
-      }
-      {deviceIsConnected &&
-        <Box>
-          <AppBar position="static" >
-            <Toolbar variant="dense">
-              <Stack direction="row" spacing={2} sx={{ flexGrow: 1 }}>
-                <Stack
-                  direction="row"
-                  spacing={2}
-                  divider={<Divider orientation="vertical" light />}
-                  sx={{ flexGrow: 1 }}
-                >
-                  <Box
-                    component="img"
-                    alt="SHIK logo"
-                    src={logo}
-                    sx={{
-                      height: 20,
-                      pt: 1
-                    }}
-                  />
-                  <Typography sx={{ pt: 1 }} variant="body2" component="div">
-                    N32B Editor
-                  </Typography>
+      <Box>
+        <AppBar position="static" >
+          <Toolbar variant="dense">
+            <Stack direction="row" spacing={2} sx={{ flexGrow: 1 }}>
+              <Stack
+                direction="row"
+                spacing={2}
+                divider={<Divider orientation="vertical" light />}
+                sx={{ flexGrow: 1 }}
+              >
+                <Box
+                  component="img"
+                  alt="SHIK logo"
+                  src={logo}
+                  sx={{
+                    height: 20,
+                    pt: 1
+                  }}
+                />
+                <Typography sx={{ pt: 1 }} variant="body2" component="div">
+                  N32B Editor
+                </Typography>
+                {deviceIsConnected &&
                   <Typography sx={{ pt: 1 }} variant="body2" component="div">
                     Device: {midiOutput.name}
                   </Typography>
-                </Stack>
-
+                }
+              </Stack>
+              {deviceIsConnected &&
                 <Stack
                   direction="row"
                   spacing={2}
@@ -318,6 +316,16 @@ function App() {
                     Save
                   </Button>
 
+                  <PresetOperations
+                    // isDualMode={isDualMode}
+                    currentPreset={currentPreset}
+                    midiInput={midiInput}
+                    midiOutput={midiOutput}
+                    currentDevicePresetIndex={currentDevicePresetIndex}
+                    handleLoadNewPreset={handleLoadNewPreset}
+                    updateCurrentDevicePresetIndex={updateCurrentDevicePresetIndex}
+                  />
+
                   {/* <Button
                     variant="outlined"
                     endIcon={<DownloadingRoundedIcon />}
@@ -326,18 +334,21 @@ function App() {
                     Load from Device
                 </Button> */}
                 </Stack>
+              }
 
-
-                {/* <PresetSelect
+              {/* <PresetSelect
                 handlePresetChange={handlePresetChange}
                 handlePresetNameChange={handlePresetNameChange}
                 currentPresetIndex={currentPresetIndex}
                 presets={presets}
               /> */}
-              </Stack>
-            </Toolbar>
-          </AppBar>
-
+            </Stack>
+          </Toolbar>
+        </AppBar>
+        {!deviceIsConnected &&
+          <ConnectDevice />
+        }
+        {deviceIsConnected &&
           <Stack
             direction="row"
             divider={<Divider orientation="vertical" flexItem />}
@@ -374,19 +385,11 @@ function App() {
                 handleModeSelect={handleModeSelect}
               />
 
-              <PresetOperations
-                // isDualMode={isDualMode}
-                currentPreset={currentPreset}
-                midiInput={midiInput}
-                midiOutput={midiOutput}
-                currentDevicePresetIndex={currentDevicePresetIndex}
-                handleLoadNewPreset={handleLoadNewPreset}
-                updateCurrentDevicePresetIndex={updateCurrentDevicePresetIndex}
-              />
+
             </Stack>
           </Stack>
-        </Box>
-      }
+        }
+      </Box>
     </Container >
   );
 }
