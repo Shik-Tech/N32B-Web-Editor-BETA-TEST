@@ -265,23 +265,28 @@ function App() {
       {deviceIsConnected &&
         <Box>
           <AppBar position="static" >
-            <Toolbar variant='dense'>
+            <Toolbar variant="dense">
               <Stack direction="row" spacing={2} sx={{ flexGrow: 1 }}>
                 <Stack
                   direction="row"
                   spacing={2}
-                  sx={{ flexGrow: 1, mt: 1 }}
+                  divider={<Divider orientation="vertical" light />}
+                  sx={{ flexGrow: 1 }}
                 >
                   <Box
                     component="img"
                     alt="SHIK logo"
                     src={logo}
                     sx={{
-                      height: 20
+                      height: 20,
+                      pt: 1
                     }}
                   />
-                  <Typography component="div">
+                  <Typography sx={{ pt: 1 }} variant="body2" component="div">
                     N32B Editor
+                  </Typography>
+                  <Typography sx={{ pt: 1 }} variant="body2" component="div">
+                    Device: {midiOutput.name}
                   </Typography>
                 </Stack>
 
@@ -340,17 +345,6 @@ function App() {
             sx={{ mt: 2 }}
           >
             <Stack>
-              <Stack
-                direction="row"
-                sx={{ mb: 1 }}
-              >
-                <Typography component="div" sx={{ flexGrow: 1 }}>
-                  N32B Editor
-                </Typography>
-                <Typography component="div" sx={{ flexGrow: 1, textAlign: 'right' }}>
-                  Device: {midiOutput.name}
-                </Typography>
-              </Stack>
               <N32B
                 knobsData={currentPreset.knobs}
                 knobsPerRow={knobsPerRow}
@@ -362,7 +356,6 @@ function App() {
 
             <Stack
               sx={{ flexGrow: 1 }}
-              divider={<Divider />}
               spacing={2}
             >
               <Typography variant="h5" component="div" gutterBottom>
