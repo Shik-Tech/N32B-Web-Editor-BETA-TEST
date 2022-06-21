@@ -1,107 +1,38 @@
 import { forEach } from 'lodash';
+import { SAVE_PRESET, SET_KNOB_MODE } from './commands';
 
 export function generateSysExFromPreset(currentPreset) {
     const messages = [];
     const {
-        // highResolution,
         knobs
     } = currentPreset;
 
-    forEach(knobs, (knob, key) => {
+    forEach(knobs, (knob) => {
         const {
-            type,
+            hardwareId,
+            mode,
             msb,
             lsb,
-            channel
+            channel,
+            invert_a,
+            invert_b
         } = knob;
 
-        const id = knob.hardwareId;
-        const knobMessage = [type, id];
-
-        switch (type) {
-            // CC
-            case 1:
-                knobMessage.push(msb);
-                // knobMessage.push(highResolution ? msb + 32 : 0);
-                knobMessage.push(0);
-                break;
-            // CC & Channel
-            case 2:
-                knobMessage.push(msb);
-                // knobMessage.push(highResolution ? msb + 32 : 0);
-                knobMessage.push(channel);
-                break;
-            // NPRN
-            case 3:
-                knobMessage.push(msb);
-                knobMessage.push(lsb);
-                knobMessage.push(0);
-                break;
-            // Disabled
-            case 11:
-                break;
-            default:
-                break;
-        }
+        const knobMessage = [
+            SET_KNOB_MODE,
+            hardwareId,
+            msb,
+            lsb,
+            channel,
+            mode,
+            +invert_a,
+            +invert_b
+        ];
 
         messages.push(knobMessage);
     });
 
-    messages.push([9, currentPreset.channel]);
-    // messages.push([14, currentPreset.highResolution]);
-    messages.push([5, currentPreset.presetID]);
-
-    return messages;
-}
-
-export function generateSysExFromPreset_MK2(currentPreset) {
-    const messages = [];
-    const {
-        knobs
-    } = currentPreset;
-
-    forEach(knobs, (knobPair, key) => {
-        forEach(knobPair.data, (knob, pairKey) => {
-            const {
-                data,
-                channel,
-                type,
-                invert,
-            } = knob;
-            
-            const id = key;
-            // console.log(pairKey);
-            const knobMessage = [type, id];
-       
-            switch (type) {
-                // CC
-                case 1:
-                    knobMessage.push(data);
-                    knobMessage.push(0);
-                    break;
-                // CC & Channel
-                case 2:
-                    knobMessage.push(data);
-                    knobMessage.push(channel);
-                    break;
-                // NPRN
-                // case 3:
-                //     knobMessage.push(msb);
-                //     knobMessage.push(lsb);
-                //     knobMessage.push(0);
-                //     break;
-                // Disabled
-                case 11:
-                    break;
-                default:
-                    break;
-            }
-    
-            messages.push(knobMessage);
-        });
-    });
-
-    messages.push([5, currentPreset.presetID]);
+    messages.push([SAVE_PRESET, currentPreset.presetID]);
 
     return messages;
 }

@@ -1,7 +1,6 @@
 import React from 'react';
 import { generateSysExFromPreset } from './utils';
 import { forEach } from 'lodash';
-import Popup from 'react-popup';
 import {
     Button,
     FormControl,
@@ -17,17 +16,10 @@ import DownloadingRoundedIcon from '@mui/icons-material/DownloadingRounded';
 import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
-// import webmidi from 'webmidi';
-
-const jetpack = window.jetpack;
-
 function PresetOperations(props) {
     const {
-        // isDualMode,
         currentPreset,
-        // midiInput,
-        // midiOutput,
-        handleLoadNewPreset,
+        midiOutput,
         currentDevicePresetIndex,
         updateCurrentDevicePresetIndex
     } = props;
@@ -52,28 +44,12 @@ function PresetOperations(props) {
         updateCurrentDevicePresetIndex(parseInt(e.target.value));
     }
 
-
     const handleSaveToDevice = e => {
-        // const messages = isDualMode ?
-        // generateSysExFromPreset_MK2(currentPreset) : generateSysExFromPreset(currentPreset);
         const messages = generateSysExFromPreset(currentPreset);
         forEach(messages, message => {
-            // console.log(webmidi.outputs[0].sendSysex(32, message));
-
-            console.log(message);
-            // midiOutput.sendSysex(32, message);
+            midiOutput.sendSysex(32, message);
         });
     }
-
-    // async function showWarning() {
-    //     return;
-    // }
-
-    const handleLoadFromDevice = e => {
-        // midiOutput.sendSysex(124, [7]);
-    }
-
-
 
     return (
         <>

@@ -16,11 +16,9 @@ import {
   // dualModePresets,
   // highResPresets
 } from './presetTemplates';
-import Popup from 'react-popup';
 import defaultPreset from './presetTemplates/default/default.json';
 import logo from './components/images/shik-logo-small.png';
 import './App.css';
-import './Popup.css';
 import { Container } from '@mui/system';
 import {
   AppBar,
@@ -35,6 +33,7 @@ import UploadFileRoundedIcon from '@mui/icons-material/UploadFileRounded';
 import SimCardDownloadRoundedIcon from '@mui/icons-material/SimCardDownloadRounded';
 import { validateValueRange } from './components/PresetOperations/utils';
 import { ModeIndexes } from './components/Editor/Modes';
+import { LOAD_PRESET } from './components/PresetOperations/commands';
 
 
 function App() {
@@ -86,7 +85,6 @@ function App() {
         midiInput.removeListener('sysex', undefined, handleSysex);
       };
     } else {
-      Popup.close();
       setDeviceIsConnected(false);
     }
   }, [midiInput, midiOutput]);
@@ -257,6 +255,10 @@ function App() {
     });
   }
 
+  const handleLoadFromDevice = e => {
+    midiOutput.sendSysex(32, [LOAD_PRESET]);
+  }
+
   return (
     <Container maxWidth="lg">
       <Box>
@@ -317,9 +319,7 @@ function App() {
                   </Button>
 
                   <PresetOperations
-                    // isDualMode={isDualMode}
                     currentPreset={currentPreset}
-                    midiInput={midiInput}
                     midiOutput={midiOutput}
                     currentDevicePresetIndex={currentDevicePresetIndex}
                     handleLoadNewPreset={handleLoadNewPreset}
@@ -327,12 +327,13 @@ function App() {
                   />
 
                   {/* <Button
-                    variant="outlined"
-                    endIcon={<DownloadingRoundedIcon />}
+                    // endIcon={<DownloadingRoundedIcon />}
                     onClick={handleLoadFromDevice}
-                >
-                    Load from Device
-                </Button> */}
+                  >
+                    <Typography>
+                      Device Settings
+                    </Typography>
+                  </Button> */}
                 </Stack>
               }
 
