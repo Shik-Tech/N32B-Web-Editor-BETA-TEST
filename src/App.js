@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { find } from 'lodash';
+import { find, findIndex } from 'lodash';
 import { WebMidi } from "webmidi";
 import {
   N32B,
@@ -33,7 +33,7 @@ import UploadFileRoundedIcon from '@mui/icons-material/UploadFileRounded';
 import SimCardDownloadRoundedIcon from '@mui/icons-material/SimCardDownloadRounded';
 import { validateValueRange } from './components/UpdateDevice/utils';
 import { ModeIndexes } from './components/Editor/Modes';
-import { LOAD_PRESET } from './components/UpdateDevice/commands';
+import { LOAD_PRESET, SEND_CURRENT_CONFIG, SYNC_KNOBS } from './components/UpdateDevice/commands';
 
 
 function App() {
@@ -167,13 +167,13 @@ function App() {
   }
 
   function handleKnobDataChange(data) {
-    setKnobsData([
-      ...knobsData.slice(0, selectedKnobIndex),
+    setKnobsData(prevKnobsData => [
+      ...prevKnobsData.slice(0, selectedKnobIndex),
       {
-        ...knobsData[selectedKnobIndex],
+        ...prevKnobsData[selectedKnobIndex],
         ...data
       },
-      ...knobsData.slice(selectedKnobIndex + 1)
+      ...prevKnobsData.slice(selectedKnobIndex + 1)
     ]);
   }
   const handleProgramChange = e => {
@@ -193,9 +193,47 @@ function App() {
   //     presetName: e.target.value
   //   }));
   // }
+  function handleReadFromDevice(data, knobIndex) {
+    setKnobsData(prevKnobsData => [
+      ...prevKnobsData.slice(0, knobIndex),
+      {
+        ...prevKnobsData[knobIndex],
+        ...data
+      },
+      ...prevKnobsData.slice(knobIndex + 1)
+    ]);
+  }
 
-  const handleSysex = e => {
+  const handleSysex = event => {
     // console.log(e);
+    const {
+      dataBytes,
+      message: {
+        manufacturerId
+      }
+    } = event;
+
+    if (manufacturerId[0] === 32) {
+      switch (dataBytes[0]) {
+        case SYNC_KNOBS:
+          const knobIndex = findIndex(knobsData, knob => knob.hardwareId === dataBytes[1]);
+          const knobData = {
+            id: knobIndex + 1,
+            hardwareId: dataBytes[1],
+            mode: dataBytes[5],
+            msb: dataBytes[2],
+            lsb: dataBytes[3],
+            channel: dataBytes[4],
+            invert_a: Boolean(dataBytes[6]),
+            invert_b: Boolean(dataBytes[7])
+          }
+          handleReadFromDevice(knobData, knobIndex);
+          break;
+
+        default:
+          break;
+      }
+    }
   }
 
   function handleModeSelect(e) {
@@ -256,7 +294,7 @@ function App() {
   }
 
   const handleLoadFromDevice = e => {
-    midiOutput.sendSysex(32, [LOAD_PRESET]);
+    midiOutput.sendSysex(32, [SEND_CURRENT_CONFIG]);
   }
 
   return (
@@ -325,14 +363,14 @@ function App() {
                     updateCurrentDevicePresetIndex={updateCurrentDevicePresetIndex}
                   />
 
-                  {/* <Button
+                  <Button
                     // endIcon={<DownloadingRoundedIcon />}
                     onClick={handleLoadFromDevice}
                   >
                     <Typography>
                       Device Settings
                     </Typography>
-                  </Button> */}
+                  </Button>
                 </Stack>
               }
 
