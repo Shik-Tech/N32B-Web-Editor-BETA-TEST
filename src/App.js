@@ -6,7 +6,7 @@ import {
   // HighResEditor,
   // DualModeEditor,
   Editor,
-  PresetOperations,
+  UpdateDevice,
   ConnectDevice,
   // PresetSelect,
   Version
@@ -31,9 +31,9 @@ import {
 } from '@mui/material';
 import UploadFileRoundedIcon from '@mui/icons-material/UploadFileRounded';
 import SimCardDownloadRoundedIcon from '@mui/icons-material/SimCardDownloadRounded';
-import { validateValueRange } from './components/PresetOperations/utils';
+import { validateValueRange } from './components/UpdateDevice/utils';
 import { ModeIndexes } from './components/Editor/Modes';
-import { LOAD_PRESET } from './components/PresetOperations/commands';
+import { LOAD_PRESET } from './components/UpdateDevice/commands';
 
 
 function App() {
@@ -195,7 +195,7 @@ function App() {
   // }
 
   const handleSysex = e => {
-    console.log(e);
+    // console.log(e);
   }
 
   function handleModeSelect(e) {
@@ -318,11 +318,10 @@ function App() {
                     Save
                   </Button>
 
-                  <PresetOperations
+                  <UpdateDevice
                     currentPreset={currentPreset}
                     midiOutput={midiOutput}
                     currentDevicePresetIndex={currentDevicePresetIndex}
-                    handleLoadNewPreset={handleLoadNewPreset}
                     updateCurrentDevicePresetIndex={updateCurrentDevicePresetIndex}
                   />
 

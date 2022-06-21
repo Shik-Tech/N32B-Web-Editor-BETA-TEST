@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment, useState } from 'react';
 import { generateSysExFromPreset } from './utils';
 import { forEach } from 'lodash';
 import {
@@ -10,13 +10,76 @@ import {
     Stack,
     Typography,
     Modal,
-    Box
+    Box,
+    CircularProgress
 } from '@mui/material';
 import DownloadingRoundedIcon from '@mui/icons-material/DownloadingRounded';
 import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
-function PresetOperations(props) {
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
+
+function CircularProgressWithLabel(props) {
+    return (
+        <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+            <CircularProgress variant="determinate" {...props} />
+            <Box
+                sx={{
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    position: 'absolute',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            >
+                <Typography
+                    variant="caption"
+                    component="div"
+                    color="text.secondary"
+                >{`${Math.round(props.value)}%`}</Typography>
+            </Box>
+        </Box>
+    );
+}
+
+
+function UpdateProgress({ updating, progress }) {
+    return (
+        <Fragment>
+            <Modal
+                // hideBackdrop
+                open={updating}
+                aria-labelledby="child-modal-title"
+                aria-describedby="child-modal-description"
+            >
+                <Box sx={{ ...style, width: 200 }}>
+                    <Stack
+                        direction="row"
+                        spacing={3}
+                    >
+                        <Typography variant='h6'>Updating</Typography>
+                        <CircularProgressWithLabel value={progress} />
+                    </Stack>
+                </Box>
+            </Modal>
+        </Fragment>
+    );
+}
+
+function UpdateDevice(props) {
     const {
         currentPreset,
         midiOutput,
@@ -24,19 +87,10 @@ function PresetOperations(props) {
         updateCurrentDevicePresetIndex
     } = props;
 
-    const style = {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 400,
-        bgcolor: 'background.paper',
-        border: '2px solid #000',
-        boxShadow: 24,
-        p: 4,
-    };
-
     const [open, setOpen] = React.useState(false);
+    const [updating, setUpdating] = useState(false);
+    const [progress, setProgress] = useState(0);
+
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
@@ -45,9 +99,23 @@ function PresetOperations(props) {
     }
 
     const handleSaveToDevice = e => {
+        setUpdating(true);
+        let promise = Promise.resolve();
         const messages = generateSysExFromPreset(currentPreset);
-        forEach(messages, message => {
-            midiOutput.sendSysex(32, message);
+        forEach(messages, (message, key) => {
+            promise = promise.then(() => {
+                setProgress((key + 1) * 100 / messages.length);
+                midiOutput.sendSysex(32, message);
+
+                return new Promise(resolve => {
+                    setTimeout(resolve, 50);
+                });
+            });
+        });
+        promise.then(() => {
+            setUpdating(false);
+            setOpen(false);
+            setProgress(0);
         });
     }
 
@@ -82,7 +150,7 @@ function PresetOperations(props) {
                         </Stack>
 
                         <Typography>
-                            Choose which preset slot you wish to save your setup to. Click "UPDATE" when done.
+                            Choose which preset slot you wish to save your setup into, then click "UPDATE".
                         </Typography>
 
                         <Stack
@@ -92,7 +160,7 @@ function PresetOperations(props) {
                             <WarningAmberRoundedIcon fontSize="large" color="error" />
                             <Typography sx={{ color: '#f44336', p: 1 }}>
                                 You are about to overwrite Preset {currentPreset.presetID}.<br />
-                                This cannot be reversed!
+                                This  operation cannot be reversed!
                             </Typography>
                         </Stack>
 
@@ -137,10 +205,14 @@ function PresetOperations(props) {
                             </Button>
                         </Stack>
                     </Stack>
+                    <UpdateProgress
+                        updating={updating}
+                        progress={progress}
+                    />
                 </Box>
             </Modal>
         </>
     );
 }
 
-export default PresetOperations;
+export default UpdateDevice;
