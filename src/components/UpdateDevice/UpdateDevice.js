@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { generateSysExFromPreset } from './utils';
-import { forEach } from 'lodash';
+import { forEach, map } from 'lodash';
 import {
     Button,
     FormControl,
@@ -119,6 +119,8 @@ function UpdateDevice(props) {
         });
     }
 
+    const presets = [0, 1, 2, 3, 4];
+
     return (
         <>
             <Button fullWidth
@@ -178,11 +180,9 @@ function UpdateDevice(props) {
                                     value={currentDevicePresetIndex}
                                     onChange={handlePresetSelect}
                                 >
-                                    <MenuItem value={0}>Preset 0</MenuItem>
-                                    <MenuItem value={1}>Preset 1</MenuItem>
-                                    <MenuItem value={2}>Preset 2</MenuItem>
-                                    <MenuItem value={3}>Preset 3</MenuItem>
-                                    <MenuItem value={4}>Preset 4</MenuItem>
+                                    {map(presets, (presetValue, key) =>
+                                        <MenuItem value={presetValue} key={key}>Preset {presetValue + 1}</MenuItem>
+                                    )}
                                 </Select>
                             </FormControl>
 
