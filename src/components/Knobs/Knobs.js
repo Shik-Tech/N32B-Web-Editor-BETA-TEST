@@ -2,7 +2,7 @@ import { Grid } from '@mui/material';
 import React from 'react';
 import Knob from './Knob';
 
-function Knobs({ knobsData, knobsPerRow, selectedKnobIndex, setSelectedKnob }) {
+function Knobs({ knobsData, selectedKnobIndex, setSelectedKnob }) {
     return (
         <Grid
             container

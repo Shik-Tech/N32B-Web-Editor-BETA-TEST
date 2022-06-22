@@ -31,9 +31,10 @@ import {
 } from '@mui/material';
 import UploadFileRoundedIcon from '@mui/icons-material/UploadFileRounded';
 import SimCardDownloadRoundedIcon from '@mui/icons-material/SimCardDownloadRounded';
+import SyncRoundedIcon from '@mui/icons-material/SyncRounded';
 import { validateValueRange } from './components/UpdateDevice/utils';
 import { ModeIndexes } from './components/Editor/Modes';
-import { LOAD_PRESET, SEND_CURRENT_CONFIG, SYNC_KNOBS } from './components/UpdateDevice/commands';
+import { LOAD_PRESET, SEND_FIRMWARE_VERSION, SYNC_KNOBS } from './components/UpdateDevice/commands';
 
 
 function App() {
@@ -49,25 +50,21 @@ function App() {
   const [knobsData, setKnobsData] = useState(defaultPreset.knobs);
   // const [currentPresetIndex, updateCurrentPresetIndex] = useState(0);
   const [currentDevicePresetIndex, updateCurrentDevicePresetIndex] = useState(0);
-  // const [currentPresetName, updatePresetName] = useState('');
-  // const [highResolution, updateHighResolution] = useState(true);
-  const [presets, setPresets] = useState([]);
-  const [isPristine, setIsPristine] = useState(true);
+  const [firmwareVersion, setFirmwareVersion] = useState();
 
   useEffect(() => {
     WebMidi.enable((err) => {
       if (err) {
         console.log("WebMidi could not be enabled.", err);
       }
-      WebMidi.addListener("connected", function (e) {
+      WebMidi.addListener("connected", function (event) {
         if (WebMidi.getInputByName("N32B")) {
-          // setPresets(defaultsPresets);
           setMidiInput(WebMidi.getInputByName("N32B"));
           setMidiOutput(WebMidi.getOutputByName("N32B"));
         }
       });
 
-      WebMidi.addListener("disconnected", function (e) {
+      WebMidi.addListener("disconnected", function (event) {
         setMidiInput(null);
         setMidiOutput(null);
       });
@@ -79,6 +76,8 @@ function App() {
       setDeviceIsConnected(true);
       midiInput.addListener('programchange', undefined, handleProgramChange);
       midiInput.addListener('sysex', 'all', handleSysex);
+      handleGetDeviceFirmwareVersion();
+      handleLoadFromDevice();
 
       return () => {
         midiInput.removeListener('programchange', undefined, handleProgramChange);
@@ -87,6 +86,7 @@ function App() {
     } else {
       setDeviceIsConnected(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [midiInput, midiOutput]);
 
 
@@ -100,11 +100,10 @@ function App() {
   useEffect(() => {
     if (midiOutput) {
       midiOutput.sendProgramChange(currentDevicePresetIndex, 1);
-
-      updatePreset(prev => ({
-        ...prev,
-        presetID: currentDevicePresetIndex
-      }));
+      // updatePreset(prev => ({
+      //   ...prev,
+      //   presetID: currentDevicePresetIndex
+      // }));
     }
   }, [currentDevicePresetIndex, midiOutput]);
 
@@ -112,27 +111,12 @@ function App() {
     updatePreset(prev => ({
       ...prev,
       knobs: [...knobsData]
-    }))
+    }));
   }, [knobsData]);
-
-  // useEffect(() => {
-  //   const isExistingPreset = find(presets, preset => preset.presetName === 'User Custom');
-  //   if (!isExistingPreset) {
-  //     setPresets(prev => ([
-  //       {
-  //         ...currentPreset,
-  //         presetName: 'User Custom'
-  //       },
-  //       ...prev
-  //     ]));
-  //   }
-  //   updateCurrentPresetIndex(0);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [isPristine]);
 
   // const handlePresetChange = e => {
   //   setIsPristine(true);
-  //   updateCurrentPresetIndex(parseInt(e.target.value));
+  //   updateCurrentPresetIndex(parseInt(event.target.value));
   // }
 
   const fileInput = useRef(null);
@@ -141,11 +125,12 @@ function App() {
     const reader = new FileReader();
     if (fileInput.current.files.length > 0) {
       const file = fileInput.current.files[0];
-      // updatePresetName(file.name);
+      // updatePresetName(filevent.name);
       reader.onload = (event => {
         const preset = JSON.parse(event.target.result);
-        handleLoadNewPreset(preset);
-        updateCurrentDevicePresetIndex(0);
+        // handleLoadNewPreset(preset);
+        updatePreset(preset);
+        // updateCurrentDevicePresetIndex(0);
       });
       reader.readAsText(file);
     }
@@ -161,7 +146,7 @@ function App() {
     //         jetpack.write(presetFilePath, currentPreset);
     //     }
     //     catch (err) {
-    //         console.log('error: ', err);
+    //         consolevent.log('error: ', err);
     //     }
     // }
   }
@@ -176,21 +161,21 @@ function App() {
       ...prevKnobsData.slice(selectedKnobIndex + 1)
     ]);
   }
-  const handleProgramChange = e => {
-    updateCurrentDevicePresetIndex(e.data[1]);
+  const handleProgramChange = event => {
+    updateCurrentDevicePresetIndex(event.data[1]);
   }
 
   const handleLoadNewPreset = preset => {
-    setPresets(prev => ([
-      preset,
-      ...prev
-    ]));
+    // setPresets(prev => ([
+    //   preset,
+    //   ...prev
+    // ]));
   }
 
   // const handlePresetNameChange = e => {
   //   updatePreset(prev => ({
   //     ...prev,
-  //     presetName: e.target.value
+  //     presetName: event.target.value
   //   }));
   // }
   function handleReadFromDevice(data, knobIndex) {
@@ -205,29 +190,35 @@ function App() {
   }
 
   const handleSysex = event => {
-    // console.log(e);
     const {
       dataBytes,
       message: {
         manufacturerId
       }
     } = event;
-
     if (manufacturerId[0] === 32) {
       switch (dataBytes[0]) {
-        case SYNC_KNOBS:
-          const knobIndex = findIndex(knobsData, knob => knob.hardwareId === dataBytes[1]);
-          const knobData = {
-            id: knobIndex + 1,
-            hardwareId: dataBytes[1],
-            mode: dataBytes[5],
-            msb: dataBytes[2],
-            lsb: dataBytes[3],
-            channel: dataBytes[4],
-            invert_a: Boolean(dataBytes[6]),
-            invert_b: Boolean(dataBytes[7])
+        case SEND_FIRMWARE_VERSION:
+          if (dataBytes.length > 2) {
+            setFirmwareVersion(dataBytes.slice(1).join('.'));
           }
-          handleReadFromDevice(knobData, knobIndex);
+          break;
+        case SYNC_KNOBS:
+          if (dataBytes.length > 7) {
+            const knobIndex = findIndex(knobsData, knob => knob.hardwareId === dataBytes[1]);
+            if (knobIndex > -1) {
+              const knobData = {
+                ...knobsData[knobIndex],
+                mode: dataBytes[5],
+                msb: dataBytes[2],
+                lsb: dataBytes[3],
+                channel: dataBytes[4],
+                invert_a: Boolean(dataBytes[6]),
+                invert_b: Boolean(dataBytes[7])
+              };
+              handleReadFromDevice(knobData, knobIndex);
+            }
+          }
           break;
 
         default:
@@ -236,9 +227,9 @@ function App() {
     }
   }
 
-  function handleModeSelect(e) {
+  function handleModeSelect(event) {
     let newData = {
-      mode: parseInt(e.target.value)
+      mode: parseInt(event.target.value)
     };
     if (newData.mode === ModeIndexes.KNOB_MODE_HIRES) {
       if (knobsData[selectedKnobIndex].msb > 31) {
@@ -257,44 +248,46 @@ function App() {
     handleKnobDataChange(newData);
   }
 
-  function handleChannelChange(e) {
+  function handleChannelChange(event) {
     handleKnobDataChange({
-      channel: parseInt(e.target.value)
+      channel: parseInt(event.target.value)
     });
   }
 
-  function handleMSBChange(e) {
+  function handleMSBChange(event) {
     handleKnobDataChange({
-      msb: validateValueRange(e.target)
+      msb: validateValueRange(event.target)
     });
   }
-  function handleLSBChange(e) {
+  function handleLSBChange(event) {
     handleKnobDataChange({
-      lsb: validateValueRange(e.target)
-    });
-  }
-
-  function handleHiResChange(e) {
-    handleKnobDataChange({
-      msb: validateValueRange(e.target),
-      lsb: validateValueRange(e.target) + 32
+      lsb: validateValueRange(event.target)
     });
   }
 
-  function handleInvertValueAChange(e) {
+  function handleHiResChange(event) {
     handleKnobDataChange({
-      invert_a: e.target.checked
+      msb: validateValueRange(event.target),
+      lsb: validateValueRange(event.target) + 32
     });
   }
 
-  function handleInvertValueBChange(e) {
+  function handleInvertValueAChange(event) {
     handleKnobDataChange({
-      invert_b: e.target.checked
+      invert_a: event.target.checked
     });
   }
 
-  const handleLoadFromDevice = e => {
-    midiOutput.sendSysex(32, [SEND_CURRENT_CONFIG]);
+  function handleInvertValueBChange(event) {
+    handleKnobDataChange({
+      invert_b: event.target.checked
+    });
+  }
+  const handleGetDeviceFirmwareVersion = () => {
+    midiOutput.sendSysex(32, [SEND_FIRMWARE_VERSION]);
+  }
+  const handleLoadFromDevice = () => {
+    midiOutput.sendSysex(32, [SYNC_KNOBS]);
   }
 
   return (
@@ -321,13 +314,21 @@ function App() {
                 <Typography sx={{ pt: 1 }} variant="body2" component="div">
                   N32B Editor
                 </Typography>
-                {deviceIsConnected &&
+                {deviceIsConnected && firmwareVersion &&
                   <Typography sx={{ pt: 1 }} variant="body2" component="div">
-                    Device: {midiOutput.name}
+                    {midiOutput.name} < Typography variant="caption" >(v.{firmwareVersion})</Typography>
                   </Typography>
                 }
               </Stack>
-              {deviceIsConnected &&
+              {deviceIsConnected && !firmwareVersion &&
+                <Button
+                  // onClick={handleFirmwareUpgrade}
+                  color="error"
+                >
+                  Firmware Upgrade
+                </Button>
+              }
+              {deviceIsConnected && firmwareVersion &&
                 <Stack
                   direction="row"
                   spacing={2}
@@ -364,12 +365,10 @@ function App() {
                   />
 
                   <Button
-                    // endIcon={<DownloadingRoundedIcon />}
+                    endIcon={<SyncRoundedIcon />}
                     onClick={handleLoadFromDevice}
                   >
-                    <Typography>
-                      Device Settings
-                    </Typography>
+                    Sync
                   </Button>
                 </Stack>
               }
@@ -386,7 +385,8 @@ function App() {
         {!deviceIsConnected &&
           <ConnectDevice />
         }
-        {deviceIsConnected &&
+
+        {deviceIsConnected && firmwareVersion &&
           <Stack
             direction="row"
             divider={<Divider orientation="vertical" flexItem />}
@@ -396,7 +396,6 @@ function App() {
             <Stack>
               <N32B
                 knobsData={currentPreset.knobs}
-                knobsPerRow={knobsPerRow}
                 selectedKnobIndex={selectedKnobIndex}
                 setSelectedKnob={setSelectedKnobIndex}
               />
@@ -422,8 +421,6 @@ function App() {
                 handleHiResChange={handleHiResChange}
                 handleModeSelect={handleModeSelect}
               />
-
-
             </Stack>
           </Stack>
         }

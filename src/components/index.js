@@ -1,6 +1,5 @@
 import N32B from './N32B';
 import Knobs from './Knobs/Knobs';
-// import { HighResEditor, DualModeEditor } from './KnobEditor';
 import Editor from './Editor/Editor';
 import UpdateDevice from './UpdateDevice/UpdateDevice';
 import ConnectDevice from './ConnectDevice';
