@@ -34,8 +34,7 @@ import SimCardDownloadRoundedIcon from '@mui/icons-material/SimCardDownloadRound
 import SyncRoundedIcon from '@mui/icons-material/SyncRounded';
 import { validateValueRange } from './components/UpdateDevice/utils';
 import { ModeIndexes } from './components/Editor/Modes';
-import { LOAD_PRESET, SEND_FIRMWARE_VERSION, SYNC_KNOBS } from './components/UpdateDevice/commands';
-
+import { SEND_FIRMWARE_VERSION, SYNC_KNOBS } from './components/UpdateDevice/commands';
 
 function App() {
   const [deviceIsConnected, setDeviceIsConnected] = useState(false);
@@ -114,20 +113,17 @@ function App() {
       reader.readAsText(file);
     }
   }
-
-  const handleSavePreset = e => {
-    // const presetFilePath = dialog.showSaveDialogSync({
-    //     title: 'Save Preset',
-    //     buttonLabel: 'Save Preset'
-    // });
-    // if (presetFilePath) {
-    //     try {
-    //         jetpack.write(presetFilePath, currentPreset);
-    //     }
-    //     catch (err) {
-    //         consolevent.log('error: ', err);
-    //     }
-    // }
+  const handleSavePreset = async () => {
+    const fileName = `N32B-Preset-${currentPreset.presetID}`;
+    const json = JSON.stringify(currentPreset);
+    const blob = new Blob([json], { type: 'application/json' });
+    const href = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = href;
+    link.download = fileName + ".json";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   function handleKnobDataChange(data) {
