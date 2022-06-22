@@ -38,19 +38,15 @@ import { LOAD_PRESET, SEND_FIRMWARE_VERSION, SYNC_KNOBS } from './components/Upd
 
 
 function App() {
-  const appVersion = "v2.0.0";
-  const knobsPerRow = 8;
-
   const [deviceIsConnected, setDeviceIsConnected] = useState(false);
   const [midiInput, setMidiInput] = useState(null);
   const [midiOutput, setMidiOutput] = useState(null);
   const [currentPreset, updatePreset] = useState(defaultPreset);
   const [selectedKnobIndex, setSelectedKnobIndex] = useState(0);
-  // const [selectedKnobData, setSelectedKnobData] = useState(defaultPreset.knobs[0]);
   const [knobsData, setKnobsData] = useState(defaultPreset.knobs);
-  // const [currentPresetIndex, updateCurrentPresetIndex] = useState(0);
   const [currentDevicePresetIndex, updateCurrentDevicePresetIndex] = useState(0);
   const [firmwareVersion, setFirmwareVersion] = useState();
+  const appVersion = 'v2.0.0';
 
   useEffect(() => {
     WebMidi.enable((err) => {
@@ -89,21 +85,9 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [midiInput, midiOutput]);
 
-
-  // useEffect(() => {
-  //   if (presets.length > 0) {
-  //     updatePreset(presets[currentPresetIndex]);
-  //   }
-  // }, [presets, currentPresetIndex]);
-
-
   useEffect(() => {
     if (midiOutput) {
       midiOutput.sendProgramChange(currentDevicePresetIndex, 1);
-      // updatePreset(prev => ({
-      //   ...prev,
-      //   presetID: currentDevicePresetIndex
-      // }));
     }
   }, [currentDevicePresetIndex, midiOutput]);
 
@@ -114,23 +98,18 @@ function App() {
     }));
   }, [knobsData]);
 
-  // const handlePresetChange = e => {
-  //   setIsPristine(true);
-  //   updateCurrentPresetIndex(parseInt(event.target.value));
-  // }
-
   const fileInput = useRef(null);
-
+  const handleFileInputClick = event => {
+    event.target.value = null;
+    fileInput.current.click();
+  }
   const handleLoadPreset = e => {
     const reader = new FileReader();
     if (fileInput.current.files.length > 0) {
       const file = fileInput.current.files[0];
-      // updatePresetName(filevent.name);
       reader.onload = (event => {
         const preset = JSON.parse(event.target.result);
-        // handleLoadNewPreset(preset);
-        updatePreset(preset);
-        // updateCurrentDevicePresetIndex(0);
+        setKnobsData(preset.knobs);
       });
       reader.readAsText(file);
     }
@@ -165,19 +144,6 @@ function App() {
     updateCurrentDevicePresetIndex(event.data[1]);
   }
 
-  const handleLoadNewPreset = preset => {
-    // setPresets(prev => ([
-    //   preset,
-    //   ...prev
-    // ]));
-  }
-
-  // const handlePresetNameChange = e => {
-  //   updatePreset(prev => ({
-  //     ...prev,
-  //     presetName: event.target.value
-  //   }));
-  // }
   function handleReadFromDevice(data, knobIndex) {
     setKnobsData(prevKnobsData => [
       ...prevKnobsData.slice(0, knobIndex),
@@ -337,16 +303,16 @@ function App() {
                     fullWidth
                     variant="outlined"
                     endIcon={<UploadFileRoundedIcon />}
-                    onClick={() => fileInput.current.click()}
+                    onClick={handleFileInputClick}
                   >
                     Load
+                    <input
+                      hidden
+                      type="file"
+                      ref={fileInput}
+                      onChange={handleLoadPreset}
+                    />
                   </Button>
-                  <input
-                    className="hiddenField"
-                    type="file"
-                    ref={fileInput}
-                    onChange={handleLoadPreset}
-                  />
                   <Button
                     fullWidth
                     variant="outlined"
