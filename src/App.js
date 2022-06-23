@@ -9,7 +9,8 @@ import {
   UpdateDevice,
   ConnectDevice,
   // PresetSelect,
-  Version
+  Version,
+  SyncDevice
 } from './components';
 import {
   // defaultsPresets,
@@ -326,12 +327,12 @@ function App() {
                     updateCurrentDevicePresetIndex={updateCurrentDevicePresetIndex}
                   />
 
-                  <Button
-                    endIcon={<SyncRoundedIcon />}
-                    onClick={handleLoadFromDevice}
-                  >
-                    Sync
-                  </Button>
+                  <SyncDevice
+                    currentPreset={currentPreset}
+                    currentDevicePresetIndex={currentDevicePresetIndex}
+                    updateCurrentDevicePresetIndex={updateCurrentDevicePresetIndex}
+                    handleLoadFromDevice={handleLoadFromDevice}
+                  />
                 </Stack>
               }
 

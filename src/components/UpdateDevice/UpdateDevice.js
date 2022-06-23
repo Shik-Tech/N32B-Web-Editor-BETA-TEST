@@ -11,10 +11,14 @@ import {
     Typography,
     Modal,
     Box,
-    CircularProgress
+    CircularProgress,
+    Dialog,
+    DialogTitle,
+    Grid,
+    IconButton,
+    Alert
 } from '@mui/material';
 import DownloadingRoundedIcon from '@mui/icons-material/DownloadingRounded';
-import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
 const style = {
@@ -123,7 +127,8 @@ function UpdateDevice(props) {
 
     return (
         <>
-            <Button fullWidth
+            <Button
+                fullWidth
                 variant="contained"
                 color="warning"
                 endIcon={<DownloadingRoundedIcon />}
@@ -131,86 +136,81 @@ function UpdateDevice(props) {
             >
                 Update
             </Button>
-            <Modal
+            <Dialog
                 open={open}
                 onClose={handleClose}
-                aria-labelledby="update-device"
-                aria-describedby="update-device-process"
             >
-                <Box sx={{ ...style }}>
+                <DialogTitle>
+                    <Grid
+                        container
+                        justifyContent={"space-between"}
+                        alignItems="center"
+                    >
+                        <Typography variant='title'>Update the Device</Typography>
+                        <IconButton
+                            onClick={handleClose}
+                        >
+                            <CloseRoundedIcon />
+                        </IconButton>
+                    </Grid>
+                </DialogTitle>
+                <Stack
+                    spacing={2}
+                    sx={{ m: 2 }}
+                >
+                    <Typography>
+                        Choose which preset slot you wish to save your setup into, then click "UPDATE".
+                    </Typography>
+                    <Alert
+                        severity='warning'
+                        variant="filled"
+                    >
+                        Please set all the knobs before updating the device. <br />
+                        This will save the device memory for long term usage.
+                    </Alert>
+                    <Alert
+                        severity='error'
+                        variant="filled"
+                    >
+                        You are about to overwrite Preset {currentPreset.presetID}. <br />
+                        This operation cannot be reversed!
+                    </Alert>
+
                     <Stack
+                        direction="row"
                         spacing={2}
                     >
-                        <Stack
-                            sx={{ p: 1 }}
-                            direction="row"
-                        >
-                            <WarningAmberRoundedIcon fontSize="large" color="warning" />
-                            <Typography variant="body2" sx={{ color: '#ffa726', p: 1 }}>
-                                Please set all the knobs before updating the device.
-                            </Typography>
-                        </Stack>
-
-                        <Typography>
-                            Choose which preset slot you wish to save your setup into, then click "UPDATE".
-                        </Typography>
-
-                        <Stack
-                            sx={{ border: '1px solid #f44336', borderRadius: 1, p: 1 }}
-                            direction="row"
-                        >
-                            <WarningAmberRoundedIcon fontSize="large" color="error" />
-                            <Typography sx={{ color: '#f44336', p: 1 }}>
-                                You are about to overwrite Preset {currentPreset.presetID}.<br />
-                                This  operation cannot be reversed!
-                            </Typography>
-                        </Stack>
-
-                        <Stack
-                            direction="row"
-                            spacing={2}
-                        >
-                            <FormControl fullWidth>
-                                <InputLabel id="preset-select-label">N32B Preset</InputLabel>
-                                <Select
-                                    labelId="preset-select-label"
-                                    id="preset-select"
-                                    label="Device Preset"
-                                    color='warning'
-                                    value={currentDevicePresetIndex}
-                                    onChange={handlePresetSelect}
-                                >
-                                    {map(presets, (presetValue, key) =>
-                                        <MenuItem value={presetValue} key={key}>Preset {presetValue + 1}</MenuItem>
-                                    )}
-                                </Select>
-                            </FormControl>
-
-                            <Button fullWidth
-                                variant="contained"
-                                color="error"
-                                endIcon={<DownloadingRoundedIcon />}
-                                onClick={handleSaveToDevice}
+                        <FormControl fullWidth>
+                            <InputLabel id="preset-select-label">N32B Preset</InputLabel>
+                            <Select
+                                labelId="preset-select-label"
+                                id="preset-select"
+                                label="Device Preset"
+                                value={currentDevicePresetIndex}
+                                onChange={handlePresetSelect}
                             >
-                                Update
-                            </Button>
+                                {map(presets, (presetValue, key) =>
+                                    <MenuItem value={presetValue} key={key}>Preset {presetValue + 1}</MenuItem>
+                                )}
+                            </Select>
+                        </FormControl>
 
-                            <Button fullWidth
-                                variant="contained"
-                                // color="error"
-                                endIcon={<CloseRoundedIcon />}
-                                onClick={handleClose}
-                            >
-                                Cancel
-                            </Button>
-                        </Stack>
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            color="error"
+                            endIcon={<DownloadingRoundedIcon />}
+                            onClick={handleSaveToDevice}
+                        >
+                            Update
+                        </Button>
                     </Stack>
-                    <UpdateProgress
-                        updating={updating}
-                        progress={progress}
-                    />
-                </Box>
-            </Modal>
+                </Stack>
+                <UpdateProgress
+                    updating={updating}
+                    progress={progress}
+                />
+            </Dialog>
         </>
     );
 }
