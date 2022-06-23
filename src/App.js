@@ -1,21 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { find, findIndex } from 'lodash';
+import { findIndex } from 'lodash';
 import { WebMidi } from "webmidi";
 import {
   N32B,
-  // HighResEditor,
-  // DualModeEditor,
   Editor,
   UpdateDevice,
   ConnectDevice,
-  // PresetSelect,
   Version,
   SyncDevice
 } from './components';
 import {
-  // defaultsPresets,
-  // dualModePresets,
-  // highResPresets
 } from './presetTemplates';
 import defaultPreset from './presetTemplates/default/default.json';
 import logo from './components/images/shik-logo-small.png';
@@ -32,7 +26,6 @@ import {
 } from '@mui/material';
 import UploadFileRoundedIcon from '@mui/icons-material/UploadFileRounded';
 import SimCardDownloadRoundedIcon from '@mui/icons-material/SimCardDownloadRounded';
-import SyncRoundedIcon from '@mui/icons-material/SyncRounded';
 import { validateValueRange } from './components/UpdateDevice/utils';
 import { ModeIndexes } from './components/Editor/Modes';
 import { SEND_FIRMWARE_VERSION, SYNC_KNOBS } from './components/UpdateDevice/commands';
@@ -46,6 +39,7 @@ function App() {
   const [knobsData, setKnobsData] = useState(defaultPreset.knobs);
   const [currentDevicePresetIndex, updateCurrentDevicePresetIndex] = useState(0);
   const [firmwareVersion, setFirmwareVersion] = useState();
+  const [midiDeviceName, setMidiDeviceName] = useState();
   const appVersion = 'v2.0.0';
 
   useEffect(() => {
@@ -69,15 +63,17 @@ function App() {
 
   useEffect(() => {
     if (midiOutput && midiInput) {
-      setDeviceIsConnected(true);
       midiInput.addListener('programchange', undefined, handleProgramChange);
       midiInput.addListener('sysex', 'all', handleSysex);
       handleGetDeviceFirmwareVersion();
       handleLoadFromDevice();
+      setMidiDeviceName(midiOutput.name);
+      setDeviceIsConnected(true);
 
       return () => {
         midiInput.removeListener('programchange', undefined, handleProgramChange);
         midiInput.removeListener('sysex', undefined, handleSysex);
+        setFirmwareVersion(null);
       };
     } else {
       setDeviceIsConnected(false);
@@ -279,7 +275,7 @@ function App() {
                 </Typography>
                 {deviceIsConnected && firmwareVersion &&
                   <Typography sx={{ pt: 1 }} variant="body2" component="div">
-                    {midiOutput.name} < Typography variant="caption" >(v.{firmwareVersion})</Typography>
+                    {midiDeviceName} < Typography variant="caption" >(v.{firmwareVersion})</Typography>
                   </Typography>
                 }
               </Stack>
