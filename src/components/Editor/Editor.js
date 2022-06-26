@@ -8,7 +8,7 @@ import {
     ControlChangeHiResForm,
     ControlChangeRPNForm
 } from "./Forms";
-import { Modes } from "./Modes";
+import { ModeIndexes, Modes } from "./Modes";
 
 function Editor(props) {
     const {
@@ -44,9 +44,9 @@ function Editor(props) {
                     )}
                 </Select>
             </FormControl>
-
-            <ChannelSelect channel={currentKnob.channel} handleChannelChange={handleChannelChange} />
-
+            {currentKnob.mode !== ModeIndexes.KNOB_MODE_DISABLE &&
+                <ChannelSelect channel={currentKnob.channel} handleChannelChange={handleChannelChange} />
+            }
             {displayForms[currentKnob.mode]}
         </Stack>
     );
