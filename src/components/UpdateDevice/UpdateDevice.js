@@ -172,7 +172,7 @@ function UpdateDevice(props) {
                         severity='error'
                         variant="filled"
                     >
-                        You are about to overwrite Preset {currentPreset.presetID}. <br />
+                        You are about to overwrite Preset {currentDevicePresetIndex + 1}. <br />
                         This operation cannot be reversed!
                     </Alert>
 
