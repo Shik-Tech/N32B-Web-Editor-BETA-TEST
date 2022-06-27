@@ -248,6 +248,9 @@ function App() {
   const handleLoadFromDevice = () => {
     midiOutput.sendSysex(32, [SYNC_KNOBS]);
   }
+  const handleFirmwareUpdate = () => {
+    window.open("https://shik.tech/firmware-update/");
+  }
 
   return (
     <Container maxWidth="lg">
@@ -281,10 +284,10 @@ function App() {
               </Stack>
               {deviceIsConnected && !firmwareVersion &&
                 <Button
-                  // onClick={handleFirmwareUpgrade}
+                  onClick={handleFirmwareUpdate}
                   color="error"
                 >
-                  Firmware Upgrade
+                  Firmware Update
                 </Button>
               }
               {deviceIsConnected && firmwareVersion &&
