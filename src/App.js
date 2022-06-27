@@ -7,7 +7,8 @@ import {
   UpdateDevice,
   ConnectDevice,
   Version,
-  SyncDevice
+  SyncDevice,
+  FirmwareUpdate
 } from './components';
 import {
 } from './presetTemplates';
@@ -280,12 +281,7 @@ function App() {
                 }
               </Stack>
               {deviceIsConnected && !firmwareVersion &&
-                <Button
-                  // onClick={handleFirmwareUpgrade}
-                  color="error"
-                >
-                  Firmware Upgrade
-                </Button>
+                <FirmwareUpdate />
               }
               {deviceIsConnected && firmwareVersion &&
                 <Stack
