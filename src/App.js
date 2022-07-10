@@ -94,6 +94,13 @@ function App() {
     }));
   }, [knobsData]);
 
+  useEffect(() => {
+    updatePreset(prev => ({
+      ...prev,
+      presetID: currentDevicePresetIndex
+    }));
+  }, [currentDevicePresetIndex]);
+
   const fileInput = useRef(null);
   const handleFileInputClick = event => {
     event.target.value = null;
