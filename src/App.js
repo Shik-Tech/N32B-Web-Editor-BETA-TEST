@@ -40,7 +40,7 @@ function App() {
   const [currentDevicePresetIndex, updateCurrentDevicePresetIndex] = useState(0);
   const [firmwareVersion, setFirmwareVersion] = useState();
   const [midiDeviceName, setMidiDeviceName] = useState();
-  const appVersion = 'v2.0.0';
+  const appVersion = 'v2.0.1';
 
   useEffect(() => {
     WebMidi.enable((err) => {
