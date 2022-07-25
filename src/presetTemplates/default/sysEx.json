@@ -1,0 +1,167 @@
+{
+    "presetVersion": 2,
+    "presetID": 1,
+    "presetName": "SysEx",
+    "knobs": [
+        {
+            "id": 1,
+            "hardwareId": 15,
+            "sysExMessage": []
+        },
+        {
+            "id": 2,
+            "hardwareId": 14,
+            "sysExMessage": []
+        },
+        {
+            "id": 3,
+            "hardwareId": 12,
+            "sysExMessage": []
+        },
+        {
+            "id": 4,
+            "hardwareId": 9,
+            "sysExMessage": []
+        },
+        {
+            "id": 5,
+            "hardwareId": 31,
+            "sysExMessage": []
+        },
+        {
+            "id": 6,
+            "hardwareId": 24,
+            "sysExMessage": []
+        },
+        {
+            "id": 7,
+            "hardwareId": 20,
+            "sysExMessage": []
+        },
+        {
+            "id": 8,
+            "hardwareId": 16,
+            "sysExMessage": []
+        },
+        {
+            "id": 9,
+            "hardwareId": 13,
+            "sysExMessage": []
+        },
+        {
+            "id": 10,
+            "hardwareId": 11,
+            "sysExMessage": []
+        },
+        {
+            "id": 11,
+            "hardwareId": 10,
+            "sysExMessage": []
+        },
+        {
+            "id": 12,
+            "hardwareId": 2,
+            "sysExMessage": []
+        },
+        {
+            "id": 13,
+            "hardwareId": 30,
+            "sysExMessage": []
+        },
+        {
+            "id": 14,
+            "hardwareId": 25,
+            "sysExMessage": []
+        },
+        {
+            "id": 15,
+            "hardwareId": 21,
+            "sysExMessage": []
+        },
+        {
+            "id": 16,
+            "hardwareId": 17,
+            "sysExMessage": []
+        },
+        {
+            "id": 17,
+            "hardwareId": 8,
+            "sysExMessage": []
+        },
+        {
+            "id": 18,
+            "hardwareId": 7,
+            "sysExMessage": []
+        },
+        {
+            "id": 19,
+            "hardwareId": 4,
+            "sysExMessage": []
+        },
+        {
+            "id": 20,
+            "hardwareId": 1,
+            "sysExMessage": []
+        },
+        {
+            "id": 21,
+            "hardwareId": 29,
+            "sysExMessage": []
+        },
+        {
+            "id": 22,
+            "hardwareId": 26,
+            "sysExMessage": []
+        },
+        {
+            "id": 23,
+            "hardwareId": 22,
+            "sysExMessage": []
+        },
+        {
+            "id": 24,
+            "hardwareId": 18,
+            "sysExMessage": []
+        },
+        {
+            "id": 25,
+            "hardwareId": 6,
+            "sysExMessage": []
+        },
+        {
+            "id": 26,
+            "hardwareId": 5,
+            "sysExMessage": []
+        },
+        {
+            "id": 27,
+            "hardwareId": 3,
+            "sysExMessage": []
+        },
+        {
+            "id": 28,
+            "hardwareId": 0,
+            "sysExMessage": []
+        },
+        {
+            "id": 29,
+            "hardwareId": 28,
+            "sysExMessage": []
+        },
+        {
+            "id": 30,
+            "hardwareId": 27,
+            "sysExMessage": []
+        },
+        {
+            "id": 31,
+            "hardwareId": 23,
+            "sysExMessage": []
+        },
+        {
+            "id": 32,
+            "hardwareId": 19,
+            "sysExMessage": []
+        }
+    ]
+}

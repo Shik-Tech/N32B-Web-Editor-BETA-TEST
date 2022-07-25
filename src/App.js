@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { findIndex } from 'lodash';
+import { findIndex, isEmpty } from 'lodash';
 import { WebMidi } from "webmidi";
 import {
   N32B,
   Editor,
+  SysExEditor,
   UpdateDevice,
   ConnectDevice,
   Version,
@@ -12,6 +13,7 @@ import {
 import {
 } from './presetTemplates';
 import defaultPreset from './presetTemplates/default/default.json';
+import sysExPreset from './presetTemplates/default/sysEx.json';
 import logo from './components/images/shik-logo-small.png';
 import './App.css';
 import { Container } from '@mui/system';
@@ -34,13 +36,13 @@ function App() {
   const [deviceIsConnected, setDeviceIsConnected] = useState(false);
   const [midiInput, setMidiInput] = useState(null);
   const [midiOutput, setMidiOutput] = useState(null);
-  const [currentPreset, updatePreset] = useState(defaultPreset);
+  const [currentPreset, updatePreset] = useState();
   const [selectedKnobIndex, setSelectedKnobIndex] = useState(0);
-  const [knobsData, setKnobsData] = useState(defaultPreset.knobs);
+  const [knobsData, setKnobsData] = useState();
   const [currentDevicePresetIndex, updateCurrentDevicePresetIndex] = useState(0);
   const [firmwareVersion, setFirmwareVersion] = useState();
   const [midiDeviceName, setMidiDeviceName] = useState();
-  const appVersion = 'v2.0.1';
+  const appVersion = 'v2.1.0';
 
   useEffect(() => {
     WebMidi.enable((err) => {
@@ -88,6 +90,7 @@ function App() {
   }, [currentDevicePresetIndex, midiOutput]);
 
   useEffect(() => {
+    if (isEmpty(knobsData)) return;
     updatePreset(prev => ({
       ...prev,
       knobs: [...knobsData]
@@ -100,6 +103,13 @@ function App() {
       presetID: currentDevicePresetIndex
     }));
   }, [currentDevicePresetIndex]);
+
+  useEffect(() => {
+    if (firmwareVersion && firmwareVersion[0] > 29) {
+      updatePreset(sysExPreset);
+      setKnobsData(sysExPreset.knobs);
+    }
+  }, [firmwareVersion]);
 
   const fileInput = useRef(null);
   const handleFileInputClick = event => {
@@ -166,7 +176,7 @@ function App() {
       switch (dataBytes[0]) {
         case SEND_FIRMWARE_VERSION:
           if (dataBytes.length > 2) {
-            setFirmwareVersion(dataBytes.slice(1).join('.'));
+            setFirmwareVersion(dataBytes.slice(1));
           }
           break;
         case SYNC_KNOBS:
@@ -191,6 +201,20 @@ function App() {
           break;
       }
     }
+  }
+
+  function handleSysExChange(event) {
+    const value = event.target.value
+      .replace(/[^0-9a-fA-F]/g, '') // HEX characters only
+      .replace(/.{1,2}(?=(.{2})+$)/g, '$& ') // Space after 2 digits
+      .toUpperCase()
+      .split(' ');
+
+    if (value.length > 12) return; // Limit sysEx data
+
+    handleKnobDataChange({
+      sysExMessage: value
+    });
   }
 
   function handleModeSelect(event) {
@@ -285,7 +309,7 @@ function App() {
                 </Typography>
                 {deviceIsConnected && firmwareVersion &&
                   <Typography sx={{ pt: 1 }} variant="body2" component="div">
-                    {midiDeviceName} < Typography variant="caption" >(v.{firmwareVersion})</Typography>
+                    {midiDeviceName} < Typography variant="caption" >(v.{firmwareVersion.join('.')})</Typography>
                   </Typography>
                 }
               </Stack>
@@ -297,7 +321,7 @@ function App() {
                   Firmware Update
                 </Button>
               }
-              {deviceIsConnected && firmwareVersion &&
+              {deviceIsConnected && firmwareVersion && currentPreset &&
                 <Stack
                   direction="row"
                   spacing={2}
@@ -355,7 +379,7 @@ function App() {
           <ConnectDevice />
         }
 
-        {deviceIsConnected && firmwareVersion &&
+        {deviceIsConnected && firmwareVersion && knobsData &&
           <Stack
             direction="row"
             divider={<Divider orientation="vertical" flexItem />}
@@ -364,7 +388,7 @@ function App() {
           >
             <Stack>
               <N32B
-                knobsData={currentPreset.knobs}
+                knobsData={knobsData}
                 selectedKnobIndex={selectedKnobIndex}
                 setSelectedKnob={setSelectedKnobIndex}
               />
@@ -376,20 +400,26 @@ function App() {
               spacing={2}
             >
               <Typography variant="h5" component="div" gutterBottom>
-                Editing Knob: <span className="currentKnob">{currentPreset.knobs[selectedKnobIndex].id}</span>
+                Editing Knob: <span className="currentKnob">{knobsData[selectedKnobIndex].id}</span>
               </Typography>
-
-              <Editor
-                currentKnob={knobsData[selectedKnobIndex]}
-                handleKnobDataChange={handleKnobDataChange}
-                handleChannelChange={handleChannelChange}
-                handleMSBChange={handleMSBChange}
-                handleLSBChange={handleLSBChange}
-                handleInvertValueAChange={handleInvertValueAChange}
-                handleInvertValueBChange={handleInvertValueBChange}
-                handleHiResChange={handleHiResChange}
-                handleModeSelect={handleModeSelect}
-              />
+              {firmwareVersion[0] < 30 &&
+                <Editor
+                  currentKnob={knobsData[selectedKnobIndex]}
+                  handleChannelChange={handleChannelChange}
+                  handleMSBChange={handleMSBChange}
+                  handleLSBChange={handleLSBChange}
+                  handleInvertValueAChange={handleInvertValueAChange}
+                  handleInvertValueBChange={handleInvertValueBChange}
+                  handleHiResChange={handleHiResChange}
+                  handleModeSelect={handleModeSelect}
+                />
+              }
+              {firmwareVersion[0] > 29 &&
+                <SysExEditor
+                  currentKnob={knobsData[selectedKnobIndex]}
+                  handleSysExChange={handleSysExChange}
+                />
+              }
             </Stack>
           </Stack>
         }
