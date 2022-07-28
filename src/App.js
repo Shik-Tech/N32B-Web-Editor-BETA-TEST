@@ -220,6 +220,12 @@ function App() {
     });
   }
 
+  function handleSysExValuesIndexChange(valuesIndex) {
+    handleKnobDataChange({
+      valuesIndex
+    });
+  }
+
   function handleMinValueChange(event) {
     handleKnobDataChange({
       minValue: validateValueRange(event.target)
@@ -434,6 +440,7 @@ function App() {
                   handleSysExMSBLSBSwitch={handleSysExMSBLSBSwitch}
                   handleMinValueChange={handleMinValueChange}
                   handleMaxValueChange={handleMaxValueChange}
+                  handleSysExValuesIndexChange={handleSysExValuesIndexChange}
                 />
               }
             </Stack>

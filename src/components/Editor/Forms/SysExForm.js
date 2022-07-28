@@ -1,3 +1,4 @@
+import { forEach } from "lodash";
 import styled from "@emotion/styled";
 import {
     Button,
@@ -6,15 +7,18 @@ import {
     IconButton,
     Paper,
     Stack,
-    TextField
+    TextField,
+    Typography
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import DragIndicatorRoundedIcon from '@mui/icons-material/DragIndicatorRounded';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import SwapHorizRoundedIcon from '@mui/icons-material/SwapHorizRounded';
+import PushPinRoundedIcon from '@mui/icons-material/PushPinRounded';
 
 const ListItem = styled('li')(({ theme }) => ({
     margin: theme.spacing(0.3),
@@ -36,38 +40,50 @@ const useStyles = makeStyles(() => ({
 function SysExForm({
     currentKnob: {
         sysExMessage,
+        valuesIndex,
         MSBFirst,
         minValue,
-        maxValue },
+        maxValue
+    },
     handleSysExChange,
     handleSysExMSBLSBSwitch,
     handleMinValueChange,
-    handleMaxValueChange
+    handleMaxValueChange,
+    handleSysExValuesIndexChange
 }) {
     const classes = useStyles();
     const [editChipIndex, setEditChipIndex] = useState(-1);
-    // console.log(sysExMessage);
-    // console.log(editChipIndex);
-    // const moveCard = useCallback((dragIndex, hoverIndex) => {
-    //     handleSysExChange(sysExMessage.splice([dragIndex, 1], [hoverIndex, 0, sysExMessage[dragIndex]]));
-    // }, []);
+    const [fullSysExMessage, setFullSysExMessage] = useState([]);
+    const MSBLSB_PLACEHOLDER = "MSBLSB_PLACEHOLDER";
 
-    const onDragEnd = useCallback((dragIndex, hoverIndex) => {
-        const newSysExMessage = Array.from(sysExMessage);
+    useEffect(() => {
+        const newFullSysExMessage = [];
+        forEach(sysExMessage, (message, index) => {
+            if (index === valuesIndex) {
+                newFullSysExMessage.push(MSBLSB_PLACEHOLDER);
+            }
+            newFullSysExMessage.push(message);
+        });
+        if (valuesIndex + 1 > sysExMessage.length) {
+            newFullSysExMessage.push(MSBLSB_PLACEHOLDER);
+        }
+        setEditChipIndex(-1);
+        setFullSysExMessage(newFullSysExMessage);
+    }, [sysExMessage, valuesIndex, MSBFirst]);
+
+    const onDragEnd = (dragIndex, hoverIndex) => {
+        const newSysExMessage = [...fullSysExMessage];
         const [removed] = newSysExMessage.splice(dragIndex, 1);
         newSysExMessage.splice(hoverIndex, 0, removed);
-        // console.log(sysExMessage);
-        // console.log(newSysExMessage);
+        const msbLsbIndex = newSysExMessage.indexOf(MSBLSB_PLACEHOLDER);
+        newSysExMessage.splice(msbLsbIndex, 1);
+        handleSysExValuesIndexChange(msbLsbIndex);
         handleSysExChange(newSysExMessage);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    };
 
     const handleDelete = item => () => {
         const newSysExMessage = [...sysExMessage];
         newSysExMessage.splice(newSysExMessage.indexOf(item), 1);
-
-        console.log(sysExMessage);
-        console.log(newSysExMessage);
         handleSysExChange(newSysExMessage);
     };
 
@@ -77,18 +93,19 @@ function SysExForm({
             .replace(/[^0-9a-fA-F]/g, '') // HEX characters only
             .toUpperCase();
 
-        handleSysExChange([
-            ...sysExMessage.slice(0, editChipIndex),
-            sysExNewByte,
-            ...sysExMessage.slice(editChipIndex + 1)
-        ]);
+        const newSysExMessage = [...fullSysExMessage];
+        newSysExMessage.splice(editChipIndex, 1, sysExNewByte);
+        const msbLsbIndex = newSysExMessage.indexOf(MSBLSB_PLACEHOLDER);
+        newSysExMessage.splice(msbLsbIndex, 1);
+        handleSysExValuesIndexChange(msbLsbIndex);
+        handleSysExChange(newSysExMessage);
     }
 
     const showEditChip = index => () => {
         setEditChipIndex(index)
     };
-    const removeEditChip = () => {
-        if (!sysExMessage[editChipIndex].length) {
+    const confirmEdit = () => {
+        if (!fullSysExMessage[editChipIndex].length) {
             handleSysExChange([
                 ...sysExMessage.slice(0, editChipIndex),
                 ...sysExMessage.slice(editChipIndex + 1),
@@ -97,11 +114,10 @@ function SysExForm({
         setEditChipIndex(-1);
     }
     const addMessageByte = () => {
-        setEditChipIndex(sysExMessage.length + 1);
-        handleSysExChange([
-            ...sysExMessage.slice(0, sysExMessage.length),
-            "00"
-        ]);
+        const newSysExMessage = [...sysExMessage];
+        newSysExMessage.push("00");
+        handleSysExChange(newSysExMessage);
+        // setEditChipIndex(fullSysExMessage.length);
     }
 
     const EditChip = function () {
@@ -110,8 +126,8 @@ function SysExForm({
                 direction="row"
             >
                 <TextField
-                    value={sysExMessage[editChipIndex]}
-                    onBlur={removeEditChip}
+                    value={fullSysExMessage[editChipIndex]}
+                    // onBlur={confirmEdit}
                     onChange={handleByteChange}
                     autoFocus={true}
                     size={'small'}
@@ -131,7 +147,7 @@ function SysExForm({
                     component="label"
                     variant="outlined"
 
-                    onClick={removeEditChip}
+                    onClick={confirmEdit}
                 >
                     <CheckCircleIcon
                         sx={{
@@ -210,7 +226,22 @@ function SysExForm({
                 ref={ref}
                 style={{ opacity }}
             >
-                {editChipIndex !== index &&
+                {message === MSBLSB_PLACEHOLDER &&
+                    <Chip
+                        ref={ref}
+                        style={{ opacity }}
+                        icon={
+                            <DragIndicatorRoundedIcon
+                                data-handler-id={handlerId}
+                            />
+                        }
+                        label={MSBFirst ? "MSB/LSB" : "LSB/MSB"}
+                        size="small"
+                        color="secondary"
+                        variant="outlined"
+                    />
+                }
+                {index !== valuesIndex && editChipIndex !== index &&
                     <Chip
                         ref={ref}
                         style={{ opacity }}
@@ -227,7 +258,7 @@ function SysExForm({
                         onDelete={handleDelete(message)}
                     />
                 }
-                {editChipIndex === index &&
+                {index !== valuesIndex && editChipIndex === index &&
                     <EditChip />
                 }
             </ListItem>
@@ -252,12 +283,14 @@ function SysExForm({
                     <Chip
                         label={'F0'}
                         size="small"
-                        variant="outlined"
+                        sx={{ fontSize: 12 }}
+                        icon={<PushPinRoundedIcon />}
                     />
+
                 </ListItem>
 
                 <DndProvider backend={HTML5Backend}>
-                    {sysExMessage.map((message, index) => (
+                    {fullSysExMessage.map((message, index) => (
                         <DraggableChip
                             onDragEnd={onDragEnd}
                             id={index}
@@ -266,44 +299,27 @@ function SysExForm({
                             message={message}
                         />
                     ))}
+                    {sysExMessage.length < 10 &&
+                        <ListItem>
+                            <IconButton
+                                color="success"
+                                size="small"
+                                component="label"
+                                variant="outlined"
+                                onClick={addMessageByte}
+                            >
+                                <AddCircleOutlineRoundedIcon />
+                            </IconButton>
+                        </ListItem>
+                    }
                 </DndProvider>
 
-                {sysExMessage.length < 10 &&
-                    <ListItem>
-                        <IconButton
-                            color="success"
-                            size="small"
-                            component="label"
-                            variant="outlined"
-                            onClick={addMessageByte}
-                        >
-                            <AddCircleOutlineRoundedIcon />
-                        </IconButton>
-                    </ListItem>
-                }
-                <ListItem>
-                    <Chip
-                        icon={<DragIndicatorRoundedIcon />}
-                        label={MSBFirst ? "MSB" : "LSB"}
-                        size="small"
-                        variant="outlined"
-                        color="secondary"
-                    />
-                </ListItem>
-                <ListItem>
-                    <Chip
-                        icon={<DragIndicatorRoundedIcon />}
-                        label={MSBFirst ? "LSB" : "MSB"}
-                        size="small"
-                        variant="outlined"
-                        color="secondary"
-                    />
-                </ListItem>
                 <ListItem>
                     <Chip
                         label={'F7'}
                         size="small"
-                        variant="outlined"
+                        sx={{ fontSize: 12 }}
+                        icon={<PushPinRoundedIcon />}
                     />
                 </ListItem>
             </Paper >
@@ -342,8 +358,26 @@ function SysExForm({
                 </FormControl>
                 <Button
                     onClick={handleSysExMSBLSBSwitch}
+                    color="secondary"
                 >
-                    Switch MSB/LSB
+                    {MSBFirst &&
+                        <Stack
+                            direction="row"
+                        >
+                            <Typography>MSB</Typography>
+                            <SwapHorizRoundedIcon />
+                            <Typography>LSB</Typography>
+                        </Stack>
+                    }
+                    {!MSBFirst &&
+                        <Stack
+                            direction="row"
+                        >
+                            <Typography>LSB</Typography>
+                            <SwapHorizRoundedIcon />
+                            <Typography>MSB</Typography>
+                        </Stack>
+                    }
                 </Button>
             </Stack>
 
