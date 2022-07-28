@@ -11,7 +11,7 @@ import {
     Typography
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import DragIndicatorRoundedIcon from '@mui/icons-material/DragIndicatorRounded';
@@ -53,6 +53,7 @@ function SysExForm({
 }) {
     const classes = useStyles();
     const [editChipIndex, setEditChipIndex] = useState(-1);
+    const [currentEditValue, setCurrentEditValue] = useState();
     const [fullSysExMessage, setFullSysExMessage] = useState([]);
     const MSBLSB_PLACEHOLDER = "MSBLSB_PLACEHOLDER";
 
@@ -71,7 +72,7 @@ function SysExForm({
         setFullSysExMessage(newFullSysExMessage);
     }, [sysExMessage, valuesIndex, MSBFirst]);
 
-    const onDragEnd = (dragIndex, hoverIndex) => {
+    const reorderItems = (dragIndex, hoverIndex) => {
         const newSysExMessage = [...fullSysExMessage];
         const [removed] = newSysExMessage.splice(dragIndex, 1);
         newSysExMessage.splice(hoverIndex, 0, removed);
@@ -81,36 +82,40 @@ function SysExForm({
         handleSysExChange(newSysExMessage);
     };
 
-    const handleDelete = item => () => {
-        const newSysExMessage = [...sysExMessage];
-        newSysExMessage.splice(newSysExMessage.indexOf(item), 1);
+    const handleDelete = index => () => {
+        const newSysExMessage = [...fullSysExMessage];
+        newSysExMessage.splice(index, 1);
+        const msbLsbIndex = newSysExMessage.indexOf(MSBLSB_PLACEHOLDER);
+        newSysExMessage.splice(msbLsbIndex, 1);
+        handleSysExValuesIndexChange(msbLsbIndex);
         handleSysExChange(newSysExMessage);
     };
 
     function handleByteChange(event) {
         if (/[fF]+7/.test(event.target.value)) return; // Do not allow end of message byte (F7)
-        const sysExNewByte = event.target.value
-            .replace(/[^0-9a-fA-F]/g, '') // HEX characters only
-            .toUpperCase();
+        setCurrentEditValue(
+            event.target.value
+                .replace(/[^0-9a-fA-F]/g, '') // HEX characters only
+                .toUpperCase()
+        );
+    }
 
+    const showEditChip = index => () => {
+        setCurrentEditValue(fullSysExMessage[index]);
+        setEditChipIndex(index)
+    };
+    const confirmEdit = () => {
         const newSysExMessage = [...fullSysExMessage];
-        newSysExMessage.splice(editChipIndex, 1, sysExNewByte);
+        if (!currentEditValue.length) {
+            newSysExMessage.splice(editChipIndex, 1);
+        } else {
+            newSysExMessage.splice(editChipIndex, 1, currentEditValue);
+        }
         const msbLsbIndex = newSysExMessage.indexOf(MSBLSB_PLACEHOLDER);
         newSysExMessage.splice(msbLsbIndex, 1);
         handleSysExValuesIndexChange(msbLsbIndex);
         handleSysExChange(newSysExMessage);
-    }
-
-    const showEditChip = index => () => {
-        setEditChipIndex(index)
-    };
-    const confirmEdit = () => {
-        if (!fullSysExMessage[editChipIndex].length) {
-            handleSysExChange([
-                ...sysExMessage.slice(0, editChipIndex),
-                ...sysExMessage.slice(editChipIndex + 1),
-            ]);
-        }
+        setCurrentEditValue();
         setEditChipIndex(-1);
     }
     const addMessageByte = () => {
@@ -126,8 +131,8 @@ function SysExForm({
                 direction="row"
             >
                 <TextField
-                    value={fullSysExMessage[editChipIndex]}
-                    // onBlur={confirmEdit}
+                    value={currentEditValue}
+                    onBlur={confirmEdit}
                     onChange={handleByteChange}
                     autoFocus={true}
                     size={'small'}
@@ -160,10 +165,10 @@ function SysExForm({
         );
     }
 
-    const DraggableChip = function ({ message, index, id, onDragEnd }) {
+    const DraggableChip = function ({ message, index, id, reorderItems }) {
         const ref = useRef(null);
         const [{ handlerId }, drop] = useDrop({
-            accept: 'DraggableChip',
+            accept: 'draggablechip',
             collect(monitor) {
                 return {
                     handlerId: monitor.getHandlerId(),
@@ -200,7 +205,7 @@ function SysExForm({
                     return;
                 }
                 // Time to actually perform the action
-                onDragEnd(dragIndex, hoverIndex);
+                reorderItems(dragIndex, hoverIndex);
                 // Note: we're mutating the monitor item here!
                 // Generally it's better to avoid mutations,
                 // but it's good here for the sake of performance
@@ -210,7 +215,7 @@ function SysExForm({
         });
 
         const [{ isDragging }, drag] = useDrag({
-            type: 'DraggableChip',
+            type: 'draggablechip',
             item: () => {
                 return { id, index }
             },
@@ -224,16 +229,13 @@ function SysExForm({
         return (
             <ListItem
                 ref={ref}
+                data-handler-id={handlerId}
                 style={{ opacity }}
             >
                 {message === MSBLSB_PLACEHOLDER &&
                     <Chip
-                        ref={ref}
-                        style={{ opacity }}
                         icon={
-                            <DragIndicatorRoundedIcon
-                                data-handler-id={handlerId}
-                            />
+                            <DragIndicatorRoundedIcon />
                         }
                         label={MSBFirst ? "MSB/LSB" : "LSB/MSB"}
                         size="small"
@@ -241,24 +243,20 @@ function SysExForm({
                         variant="outlined"
                     />
                 }
-                {index !== valuesIndex && editChipIndex !== index &&
+                {message !== MSBLSB_PLACEHOLDER && editChipIndex !== index &&
                     <Chip
-                        ref={ref}
-                        style={{ opacity }}
                         icon={
-                            <DragIndicatorRoundedIcon
-                                data-handler-id={handlerId}
-                            />
+                            <DragIndicatorRoundedIcon />
                         }
                         label={message}
                         size="small"
                         color="primary"
                         clickable={true}
                         onClick={showEditChip(index)}
-                        onDelete={handleDelete(message)}
+                        onDelete={handleDelete(index)}
                     />
                 }
-                {index !== valuesIndex && editChipIndex === index &&
+                {message !== MSBLSB_PLACEHOLDER && editChipIndex === index &&
                     <EditChip />
                 }
             </ListItem>
@@ -286,13 +284,12 @@ function SysExForm({
                         sx={{ fontSize: 12 }}
                         icon={<PushPinRoundedIcon />}
                     />
-
                 </ListItem>
 
                 <DndProvider backend={HTML5Backend}>
                     {fullSysExMessage.map((message, index) => (
                         <DraggableChip
-                            onDragEnd={onDragEnd}
+                            reorderItems={reorderItems}
                             id={index}
                             key={index}
                             index={index}

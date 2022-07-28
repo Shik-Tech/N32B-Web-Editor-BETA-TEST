@@ -208,7 +208,6 @@ function App() {
 
 
   function handleSysExChange(sysExMessage) {
-    // const value = event.target.value
     //   .replace(/.{1,2}(?=(.{2})+$)/g, '$& ') // Space after 2 digits
     if (sysExMessage.length > 10) return; // Limit sysEx data
     handleKnobDataChange({ sysExMessage });
