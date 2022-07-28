@@ -5,9 +5,9 @@ import {
 } from "./Forms";
 
 function SysExEditor(props) {
-    const {
-        currentKnob,
-    } = props;
+    // const {
+    //     currentKnob,
+    // } = props;
 
     return (
         <Stack

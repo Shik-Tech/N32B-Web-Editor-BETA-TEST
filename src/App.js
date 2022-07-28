@@ -108,6 +108,9 @@ function App() {
     if (firmwareVersion && firmwareVersion[0] > 29) {
       updatePreset(sysExPreset);
       setKnobsData(sysExPreset.knobs);
+    } else {
+      updatePreset(defaultPreset);
+      setKnobsData(defaultPreset.knob);
     }
   }, [firmwareVersion]);
 
@@ -203,17 +206,23 @@ function App() {
     }
   }
 
-  function handleSysExChange(event) {
-    const value = event.target.value
-      .replace(/[^0-9a-fA-F]/g, '') // HEX characters only
-      .replace(/.{1,2}(?=(.{2})+$)/g, '$& ') // Space after 2 digits
-      .toUpperCase()
-      .split(' ');
-
-    if (value.length > 12) return; // Limit sysEx data
-
+  function handleSysExDeleteByte(value) {
     handleKnobDataChange({
       sysExMessage: value
+    });
+  }
+
+  function handleSysExChange(sysExMessage) {
+    // const value = event.target.value
+    //   .replace(/.{1,2}(?=(.{2})+$)/g, '$& ') // Space after 2 digits
+    if (sysExMessage.length > 10) return; // Limit sysEx data
+
+    handleKnobDataChange({ sysExMessage });
+  }
+
+  function handleSysExMSBLSBSwitch() {
+    handleKnobDataChange({
+      MSBFirst: !knobsData[selectedKnobIndex].MSBFirst
     });
   }
 
@@ -418,6 +427,8 @@ function App() {
                 <SysExEditor
                   currentKnob={knobsData[selectedKnobIndex]}
                   handleSysExChange={handleSysExChange}
+                  handleSysExMSBLSBSwitch={handleSysExMSBLSBSwitch}
+                  handleSysExDeleteByte={handleSysExDeleteByte}
                 />
               }
             </Stack>

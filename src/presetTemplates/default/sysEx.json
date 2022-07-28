@@ -6,162 +6,239 @@
         {
             "id": 1,
             "hardwareId": 15,
-            "sysExMessage": []
+            "sysExMessage": [
+                "40",
+                "0B",
+                "10",
+                "00",
+                "01",
+                "01"
+            ],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 2,
             "hardwareId": 14,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 3,
             "hardwareId": 12,
-            "sysExMessage": []
+            "sysExMessage": [
+                "43",
+                "75",
+                "01",
+                "01",
+                "48"
+            ],
+            "MSBFirst": false,
+            "valuesIndex": 6
         },
         {
             "id": 4,
             "hardwareId": 9,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 5,
             "hardwareId": 31,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 6,
             "hardwareId": 24,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
-            "id": 7,
+            "id": 6,
             "hardwareId": 20,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 8,
             "hardwareId": 16,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 9,
             "hardwareId": 13,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 10,
             "hardwareId": 11,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 11,
             "hardwareId": 10,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 12,
             "hardwareId": 2,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 13,
             "hardwareId": 30,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 14,
             "hardwareId": 25,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 15,
             "hardwareId": 21,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 16,
-            "hardwareId": 17,
-            "sysExMessage": []
+            "hardwareId": 16,
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
-            "id": 17,
+            "id": 16,
             "hardwareId": 8,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 18,
-            "hardwareId": 7,
-            "sysExMessage": []
+            "hardwareId": 6,
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 19,
             "hardwareId": 4,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 20,
             "hardwareId": 1,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 21,
             "hardwareId": 29,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 22,
             "hardwareId": 26,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 23,
             "hardwareId": 22,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 24,
             "hardwareId": 18,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 25,
             "hardwareId": 6,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 26,
             "hardwareId": 5,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
-            "id": 27,
+            "id": 26,
             "hardwareId": 3,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 28,
             "hardwareId": 0,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 29,
             "hardwareId": 28,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 30,
-            "hardwareId": 27,
-            "sysExMessage": []
+            "hardwareId": 26,
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 31,
             "hardwareId": 23,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         },
         {
             "id": 32,
             "hardwareId": 19,
-            "sysExMessage": []
+            "sysExMessage": [],
+            "MSBFirst": true,
+            "valuesIndex": 6
         }
     ]
 }
