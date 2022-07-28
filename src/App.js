@@ -206,17 +206,11 @@ function App() {
     }
   }
 
-  function handleSysExDeleteByte(value) {
-    handleKnobDataChange({
-      sysExMessage: value
-    });
-  }
 
   function handleSysExChange(sysExMessage) {
     // const value = event.target.value
     //   .replace(/.{1,2}(?=(.{2})+$)/g, '$& ') // Space after 2 digits
     if (sysExMessage.length > 10) return; // Limit sysEx data
-
     handleKnobDataChange({ sysExMessage });
   }
 
@@ -226,6 +220,16 @@ function App() {
     });
   }
 
+  function handleMinValueChange(event) {
+    handleKnobDataChange({
+      minValue: validateValueRange(event.target)
+    });
+  }
+  function handleMaxValueChange(event) {
+    handleKnobDataChange({
+      maxValue: validateValueRange(event.target)
+    });
+  }
   function handleModeSelect(event) {
     let newData = {
       mode: parseInt(event.target.value)
@@ -428,7 +432,8 @@ function App() {
                   currentKnob={knobsData[selectedKnobIndex]}
                   handleSysExChange={handleSysExChange}
                   handleSysExMSBLSBSwitch={handleSysExMSBLSBSwitch}
-                  handleSysExDeleteByte={handleSysExDeleteByte}
+                  handleMinValueChange={handleMinValueChange}
+                  handleMaxValueChange={handleMaxValueChange}
                 />
               }
             </Stack>

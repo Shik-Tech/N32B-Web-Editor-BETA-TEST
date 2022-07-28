@@ -2,56 +2,73 @@ import styled from "@emotion/styled";
 import {
     Button,
     Chip,
+    FormControl,
+    IconButton,
     Paper,
     Stack,
     TextField
 } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import React, { useCallback, useRef, useState } from "react";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import DragIndicatorRoundedIcon from '@mui/icons-material/DragIndicatorRounded';
+import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 const ListItem = styled('li')(({ theme }) => ({
     margin: theme.spacing(0.3),
 }));
 
-const style = {
-    border: '1px dashed gray',
-    padding: '0.5rem 1rem',
-    marginBottom: '.5rem',
-    backgroundColor: 'white',
-    cursor: 'move',
-}
-
-
+const useStyles = makeStyles(() => ({
+    editInputRoot: {
+        borderRadius: 16
+    },
+    editInput: {
+        margin: 0,
+        padding: 0,
+        fontSize: 13,
+        height: 23,
+        textAlign: 'center'
+    }
+}));
 
 function SysExForm({
     currentKnob: {
         sysExMessage,
-        MSBFirst },
+        MSBFirst,
+        minValue,
+        maxValue },
     handleSysExChange,
     handleSysExMSBLSBSwitch,
-    handleSysExDeleteByte
+    handleMinValueChange,
+    handleMaxValueChange
 }) {
+    const classes = useStyles();
     const [editChipIndex, setEditChipIndex] = useState(-1);
-
+    // console.log(sysExMessage);
+    // console.log(editChipIndex);
     // const moveCard = useCallback((dragIndex, hoverIndex) => {
     //     handleSysExChange(sysExMessage.splice([dragIndex, 1], [hoverIndex, 0, sysExMessage[dragIndex]]));
     // }, []);
-
 
     const onDragEnd = useCallback((dragIndex, hoverIndex) => {
         const newSysExMessage = Array.from(sysExMessage);
         const [removed] = newSysExMessage.splice(dragIndex, 1);
         newSysExMessage.splice(hoverIndex, 0, removed);
-
+        // console.log(sysExMessage);
+        // console.log(newSysExMessage);
         handleSysExChange(newSysExMessage);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleDelete = item => () => {
-        const newMessage = [...sysExMessage];
-        newMessage.splice(newMessage.indexOf(item), 1);
-        handleSysExDeleteByte(newMessage);
+        const newSysExMessage = [...sysExMessage];
+        newSysExMessage.splice(newSysExMessage.indexOf(item), 1);
+
+        console.log(sysExMessage);
+        console.log(newSysExMessage);
+        handleSysExChange(newSysExMessage);
     };
 
     function handleByteChange(event) {
@@ -70,8 +87,8 @@ function SysExForm({
     const showEditChip = index => () => {
         setEditChipIndex(index)
     };
-    const removeEditChip = (event) => {
-        if (!event.target.value.length) {
+    const removeEditChip = () => {
+        if (!sysExMessage[editChipIndex].length) {
             handleSysExChange([
                 ...sysExMessage.slice(0, editChipIndex),
                 ...sysExMessage.slice(editChipIndex + 1),
@@ -89,12 +106,41 @@ function SysExForm({
 
     const EditChip = function () {
         return (
-            <TextField
-                value={sysExMessage[editChipIndex]}
-                onBlur={removeEditChip}
-                onChange={handleByteChange}
-                autoFocus={true}
-            />
+            <Stack
+                direction="row"
+            >
+                <TextField
+                    value={sysExMessage[editChipIndex]}
+                    onBlur={removeEditChip}
+                    onChange={handleByteChange}
+                    autoFocus={true}
+                    size={'small'}
+                    inputProps={{
+                        maxLength: 2
+                    }}
+                    InputProps={{
+                        classes: {
+                            root: classes.editInputRoot,
+                            input: classes.editInput
+                        }
+                    }}
+                />
+                <IconButton
+                    color="success"
+                    size="small"
+                    component="label"
+                    variant="outlined"
+
+                    onClick={removeEditChip}
+                >
+                    <CheckCircleIcon
+                        sx={{
+                            fontSize: 16
+                        }}
+                    />
+                </IconButton>
+            </Stack>
+
         );
     }
 
@@ -162,11 +208,17 @@ function SysExForm({
         return (
             <ListItem
                 ref={ref}
-                style={{ ...style, opacity }}
-                data-handler-id={handlerId}
+                style={{ opacity }}
             >
                 {editChipIndex !== index &&
                     <Chip
+                        ref={ref}
+                        style={{ opacity }}
+                        icon={
+                            <DragIndicatorRoundedIcon
+                                data-handler-id={handlerId}
+                            />
+                        }
                         label={message}
                         size="small"
                         color="primary"
@@ -182,7 +234,7 @@ function SysExForm({
         );
     }
 
-    const MessageDisplay = function () {
+    const MessageList = function () {
         return (
             <Paper
                 sx={{
@@ -190,8 +242,8 @@ function SysExForm({
                     justifyContent: 'center',
                     flexWrap: 'wrap',
                     listStyle: 'none',
-                    maxWidth: 53,
-                    p: 0,
+                    maxWidth: 70,
+                    p: 2,
                     m: 0,
                 }}
                 component="ul"
@@ -218,18 +270,20 @@ function SysExForm({
 
                 {sysExMessage.length < 10 &&
                     <ListItem>
-                        <Chip
-                            label={"+"}
-                            size="small"
-                            variant="outlined"
+                        <IconButton
                             color="success"
-                            clickable={true}
+                            size="small"
+                            component="label"
+                            variant="outlined"
                             onClick={addMessageByte}
-                        />
+                        >
+                            <AddCircleOutlineRoundedIcon />
+                        </IconButton>
                     </ListItem>
                 }
                 <ListItem>
                     <Chip
+                        icon={<DragIndicatorRoundedIcon />}
                         label={MSBFirst ? "MSB" : "LSB"}
                         size="small"
                         variant="outlined"
@@ -238,6 +292,7 @@ function SysExForm({
                 </ListItem>
                 <ListItem>
                     <Chip
+                        icon={<DragIndicatorRoundedIcon />}
                         label={MSBFirst ? "LSB" : "MSB"}
                         size="small"
                         variant="outlined"
@@ -260,12 +315,37 @@ function SysExForm({
             direction="row"
             spacing={2}
         >
-            <MessageDisplay />
-            <Button
-                onClick={handleSysExMSBLSBSwitch}
+            <MessageList />
+            <Stack
+                direction="column"
+                spacing={2}
             >
-                Switch MSB/LSB
-            </Button>
+                <FormControl fullWidth>
+                    <TextField
+                        label="Min value"
+                        type="number"
+                        size="small"
+                        InputProps={{ inputProps: { min: 0, max: 127 } }}
+                        value={minValue}
+                        onChange={handleMinValueChange}
+                    />
+                </FormControl>
+                <FormControl fullWidth>
+                    <TextField
+                        label="Max value"
+                        type="number"
+                        size="small"
+                        InputProps={{ inputProps: { min: 0, max: 127 } }}
+                        value={maxValue}
+                        onChange={handleMaxValueChange}
+                    />
+                </FormControl>
+                <Button
+                    onClick={handleSysExMSBLSBSwitch}
+                >
+                    Switch MSB/LSB
+                </Button>
+            </Stack>
 
         </Stack>
     )
