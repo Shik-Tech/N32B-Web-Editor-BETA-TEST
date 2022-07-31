@@ -168,7 +168,7 @@ function SysExForm({
     const DraggableChip = function ({ message, index, id, reorderItems }) {
         const ref = useRef(null);
         const [{ handlerId }, drop] = useDrop({
-            accept: 'draggablechip',
+            accept: 'DraggableChip',
             collect(monitor) {
                 return {
                     handlerId: monitor.getHandlerId(),
@@ -215,7 +215,7 @@ function SysExForm({
         });
 
         const [{ isDragging }, drag] = useDrag({
-            type: 'draggablechip',
+            type: 'DraggableChip',
             item: () => {
                 return { id, index }
             },
@@ -289,11 +289,11 @@ function SysExForm({
                 <DndProvider backend={HTML5Backend}>
                     {fullSysExMessage.map((message, index) => (
                         <DraggableChip
-                            reorderItems={reorderItems}
-                            id={index}
                             key={index}
                             index={index}
+                            id={index}
                             message={message}
+                            reorderItems={reorderItems}
                         />
                     ))}
                     {sysExMessage.length < 10 &&

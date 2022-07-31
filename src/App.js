@@ -208,7 +208,6 @@ function App() {
 
 
   function handleSysExChange(sysExMessage) {
-    //   .replace(/.{1,2}(?=(.{2})+$)/g, '$& ') // Space after 2 digits
     if (sysExMessage.length > 10) return; // Limit sysEx data
     handleKnobDataChange({ sysExMessage });
   }
@@ -369,6 +368,7 @@ function App() {
                   </Button>
 
                   <UpdateDevice
+                    firmwareVersion={firmwareVersion}
                     currentPreset={currentPreset}
                     midiOutput={midiOutput}
                     currentDevicePresetIndex={currentDevicePresetIndex}

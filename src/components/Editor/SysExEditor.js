@@ -5,10 +5,6 @@ import {
 } from "./Forms";
 
 function SysExEditor(props) {
-    // const {
-    //     currentKnob,
-    // } = props;
-
     return (
         <Stack
             spacing={2}

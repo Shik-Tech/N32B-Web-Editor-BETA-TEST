@@ -37,6 +37,40 @@ export function generateSysExFromPreset(currentPreset) {
     return messages;
 }
 
+export function generateSysExFromPresetV2(currentPreset) {
+    const messages = [];
+    const {
+        knobs
+    } = currentPreset;
+
+    forEach(knobs, (knob) => {
+        const {
+            hardwareId,
+            sysExMessage,
+            MSBFirst,
+            valuesIndex,
+            minValue,
+            maxValue
+        } = knob;
+
+        const knobMessage = [
+            SET_KNOB_MODE,
+            hardwareId,
+            sysExMessage,
+            +MSBFirst,
+            valuesIndex,
+            minValue,
+            maxValue
+        ];
+
+        messages.push(knobMessage);
+    });
+
+    messages.push([SAVE_PRESET, currentPreset.presetID]);
+
+    return messages;
+}
+
 // Accepts target obejct of input onChange event
 export function validateValueRange({ value, min, max }) {
     return Math.max(Number(min), Math.min(Number(max), Number(value)));
