@@ -1,5 +1,5 @@
-import { forEach } from 'lodash';
-import { SAVE_PRESET, SET_KNOB_MODE } from './commands';
+import { forEach, map } from 'lodash';
+import { SAVE_PRESET, SET_KNOB_MODE, START_SYSEX_MESSAGE } from './commands';
 
 export function generateSysExFromPreset(currentPreset) {
     const messages = [];
@@ -43,7 +43,7 @@ export function generateSysExFromPresetV2(currentPreset) {
         knobs
     } = currentPreset;
 
-    forEach(knobs, (knob) => {
+    const knobMessage = map(knobs, knob => {
         const {
             hardwareId,
             sysExMessage,
@@ -53,19 +53,22 @@ export function generateSysExFromPresetV2(currentPreset) {
             maxValue
         } = knob;
 
-        const knobMessage = [
+        return [
             SET_KNOB_MODE,
             hardwareId,
-            sysExMessage,
             +MSBFirst,
             valuesIndex,
-            minValue,
-            maxValue
+            minValue >> 4,
+            minValue & 0x0F,
+            maxValue >> 4,
+            maxValue & 0x0F,
+            START_SYSEX_MESSAGE,
+            sysExMessage.length,
+            ...map(sysExMessage, byte => parseInt(byte, 16))
         ];
-
-        messages.push(knobMessage);
     });
 
+    messages.push(...knobMessage);
     messages.push([SAVE_PRESET, currentPreset.presetID]);
 
     return messages;

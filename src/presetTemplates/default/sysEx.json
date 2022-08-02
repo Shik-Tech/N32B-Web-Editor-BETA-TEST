@@ -7,39 +7,36 @@
             "id": 1,
             "hardwareId": 15,
             "sysExMessage": [
-                "40",
-                "0B",
+                "43",
                 "10",
-                "00",
-                "01",
-                "01"
+                "15",
+                "48"
             ],
-            "MSBFirst": true,
-            "valuesIndex": 6,
+            "MSBFirst": false,
+            "valuesIndex": 4,
             "minValue": 0,
-            "maxValue": 127
+            "maxValue": 255
         },
         {
             "id": 2,
             "hardwareId": 14,
-            "sysExMessage": [],
+            "sysExMessage": [
+                "43",
+                "10",
+                "15",
+                "4D"
+            ],
             "MSBFirst": true,
-            "valuesIndex": 0,
+            "valuesIndex": 4,
             "minValue": 0,
-            "maxValue": 127
+            "maxValue": 55
         },
         {
             "id": 3,
             "hardwareId": 12,
-            "sysExMessage": [
-                "43",
-                "75",
-                "01",
-                "01",
-                "48"
-            ],
+            "sysExMessage": [],
             "MSBFirst": false,
-            "valuesIndex": 5,
+            "valuesIndex": 0,
             "minValue": 0,
             "maxValue": 127
         },

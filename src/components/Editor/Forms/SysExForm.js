@@ -338,7 +338,7 @@ function SysExForm({
                         label="Min value"
                         type="number"
                         size="small"
-                        InputProps={{ inputProps: { min: 0, max: 127 } }}
+                        InputProps={{ inputProps: { min: 0, max: 255 } }}
                         value={minValue}
                         onChange={handleMinValueChange}
                     />
@@ -348,7 +348,7 @@ function SysExForm({
                         label="Max value"
                         type="number"
                         size="small"
-                        InputProps={{ inputProps: { min: 0, max: 127 } }}
+                        InputProps={{ inputProps: { min: 0, max: 255 } }}
                         value={maxValue}
                         onChange={handleMaxValueChange}
                     />
