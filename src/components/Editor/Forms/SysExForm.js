@@ -2,8 +2,10 @@ import { forEach } from "lodash";
 import styled from "@emotion/styled";
 import {
     Button,
+    Checkbox,
     Chip,
     FormControl,
+    FormControlLabel,
     IconButton,
     Paper,
     Stack,
@@ -43,13 +45,15 @@ function SysExForm({
         valuesIndex,
         MSBFirst,
         minValue,
-        maxValue
+        maxValue,
+        isSigned
     },
     handleSysExChange,
     handleSysExMSBLSBSwitch,
     handleMinValueChange,
     handleMaxValueChange,
-    handleSysExValuesIndexChange
+    handleSysExValuesIndexChange,
+    handleIsSignedChange
 }) {
     const classes = useStyles();
     const [editChipIndex, setEditChipIndex] = useState(-1);
@@ -333,22 +337,32 @@ function SysExForm({
                 direction="column"
                 spacing={2}
             >
-                <FormControl fullWidth>
-                    <TextField
-                        label="Min value"
-                        type="number"
-                        size="small"
-                        InputProps={{ inputProps: { min: 0, max: 255 } }}
-                        value={minValue}
-                        onChange={handleMinValueChange}
-                    />
-                </FormControl>
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={isSigned}
+                            onChange={handleIsSignedChange}
+                        />
+                    }
+                    label="Bipolar" />
+                {!isSigned &&
+                    <FormControl fullWidth>
+                        <TextField
+                            label="Min value"
+                            type="number"
+                            size="small"
+                            InputProps={{ inputProps: { min: 0, max: 255 } }}
+                            value={minValue}
+                            onChange={handleMinValueChange}
+                        />
+                    </FormControl>
+                }
                 <FormControl fullWidth>
                     <TextField
                         label="Max value"
                         type="number"
                         size="small"
-                        InputProps={{ inputProps: { min: 0, max: 255 } }}
+                        InputProps={{ inputProps: { min: 0, max: isSigned ? 127 : 255 } }}
                         value={maxValue}
                         onChange={handleMaxValueChange}
                     />
@@ -356,6 +370,7 @@ function SysExForm({
                 <Button
                     onClick={handleSysExMSBLSBSwitch}
                     color="secondary"
+                    variant="outlined"
                 >
                     {MSBFirst &&
                         <Stack

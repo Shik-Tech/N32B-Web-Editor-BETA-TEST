@@ -42,7 +42,12 @@ function App() {
   const [currentDevicePresetIndex, updateCurrentDevicePresetIndex] = useState(0);
   const [firmwareVersion, setFirmwareVersion] = useState();
   const [midiDeviceName, setMidiDeviceName] = useState();
+  const knobsDataRef = useRef();
+  const firmwareVersionRef = useRef();
   const appVersion = 'v2.1.0';
+
+  knobsDataRef.current = knobsData;
+  firmwareVersionRef.current = firmwareVersion;
 
   useEffect(() => {
     WebMidi.enable((err) => {
@@ -68,14 +73,15 @@ function App() {
       midiInput.addListener('programchange', undefined, handleProgramChange);
       midiInput.addListener('sysex', 'all', handleSysex);
       handleGetDeviceFirmwareVersion();
-      handleLoadFromDevice();
+      // handleLoadFromDevice();
+      // TODO: Ask to sync on first device connection
+      handleSyncRequest();
       setMidiDeviceName(midiOutput.name);
-      setDeviceIsConnected(true);
 
       return () => {
         midiInput.removeListener('programchange', undefined, handleProgramChange);
         midiInput.removeListener('sysex', undefined, handleSysex);
-        setFirmwareVersion(null);
+        setFirmwareVersion([]);
       };
     } else {
       setDeviceIsConnected(false);
@@ -105,12 +111,15 @@ function App() {
   }, [currentDevicePresetIndex]);
 
   useEffect(() => {
-    if (firmwareVersion && firmwareVersion[0] > 29) {
-      updatePreset(sysExPreset);
-      setKnobsData(sysExPreset.knobs);
-    } else {
-      updatePreset(defaultPreset);
-      setKnobsData(defaultPreset.knob);
+    if (firmwareVersion) {
+      if (firmwareVersion[0] > 29) {
+        updatePreset(sysExPreset);
+        setKnobsData(sysExPreset.knobs);
+      } else {
+        updatePreset(defaultPreset);
+        setKnobsData(defaultPreset.knob);
+      }
+      setDeviceIsConnected(true);
     }
   }, [firmwareVersion]);
 
@@ -131,7 +140,7 @@ function App() {
     }
   }
   const handleSavePreset = async () => {
-    const fileName = `N32B-Preset-${currentPreset.presetID}`;
+    const fileName = `N32B-Preset-${currentPreset.presetName}`;
     const json = JSON.stringify(currentPreset);
     const blob = new Blob([json], { type: 'application/json' });
     const href = URL.createObjectURL(blob);
@@ -144,6 +153,8 @@ function App() {
   }
 
   function handleKnobDataChange(data) {
+    console.log(data);
+
     setKnobsData(prevKnobsData => [
       ...prevKnobsData.slice(0, selectedKnobIndex),
       {
@@ -152,9 +163,6 @@ function App() {
       },
       ...prevKnobsData.slice(selectedKnobIndex + 1)
     ]);
-  }
-  const handleProgramChange = event => {
-    updateCurrentDevicePresetIndex(event.data[1]);
   }
 
   function handleReadFromDevice(data, knobIndex) {
@@ -168,6 +176,14 @@ function App() {
     ]);
   }
 
+  const handleProgramChange = event => {
+    updateCurrentDevicePresetIndex(event.data[1]);
+  }
+
+  const handleSyncRequest = () => {
+
+  }
+
   const handleSysex = event => {
     const {
       dataBytes,
@@ -175,6 +191,7 @@ function App() {
         manufacturerId
       }
     } = event;
+    let knobData = {};
     if (manufacturerId[0] === 32) {
       switch (dataBytes[0]) {
         case SEND_FIRMWARE_VERSION:
@@ -184,17 +201,34 @@ function App() {
           break;
         case SYNC_KNOBS:
           if (dataBytes.length > 7) {
-            const knobIndex = findIndex(knobsData, knob => knob.hardwareId === dataBytes[1]);
+            const knobIndex = findIndex(knobsDataRef.current, knob => knob.hardwareId === dataBytes[1]);
             if (knobIndex > -1) {
-              const knobData = {
-                ...knobsData[knobIndex],
-                mode: dataBytes[5],
-                msb: dataBytes[2],
-                lsb: dataBytes[3],
-                channel: dataBytes[4],
-                invert_a: Boolean(dataBytes[6]),
-                invert_b: Boolean(dataBytes[7])
-              };
+              if (firmwareVersionRef[0] < 30) {
+                knobData = {
+                  ...knobsDataRef.current[knobIndex],
+                  mode: dataBytes[5],
+                  msb: dataBytes[2],
+                  lsb: dataBytes[3],
+                  channel: dataBytes[4],
+                  invert_a: Boolean(dataBytes[6]),
+                  invert_b: Boolean(dataBytes[7])
+                };
+              } else {
+                knobData = {
+                  ...knobsDataRef.current[knobIndex],
+                  MSBFirst: Boolean(dataBytes[2]),
+                  valuesIndex: dataBytes[3],
+                  minValue: (dataBytes[4] << 4) | dataBytes[5],
+                  maxValue: (dataBytes[6] << 4) | dataBytes[7],
+                  isSigned: Boolean(dataBytes[8]),
+                  sysExMessage: []
+                }
+                const messageSize = dataBytes[9];
+
+                for (let byteIndex = 0; byteIndex < messageSize; byteIndex++) {
+                  knobData.sysExMessage.push(dataBytes[byteIndex + 10]);
+                }
+              }
               handleReadFromDevice(knobData, knobIndex);
             }
           }
@@ -221,6 +255,18 @@ function App() {
   function handleSysExValuesIndexChange(valuesIndex) {
     handleKnobDataChange({
       valuesIndex
+    });
+  }
+  function handleIsSignedChange(event) {
+    const isSigned = event.target.checked;
+    const minValue = isSigned ? 0 : knobsData[selectedKnobIndex].minValue;
+    const maxValue =
+      isSigned && knobsData[selectedKnobIndex].maxValue > 127 ?
+        127 : knobsData[selectedKnobIndex].maxValue;
+    handleKnobDataChange({
+      isSigned,
+      minValue,
+      maxValue
     });
   }
 
@@ -440,6 +486,7 @@ function App() {
                   handleMinValueChange={handleMinValueChange}
                   handleMaxValueChange={handleMaxValueChange}
                   handleSysExValuesIndexChange={handleSysExValuesIndexChange}
+                  handleIsSignedChange={handleIsSignedChange}
                 />
               }
             </Stack>

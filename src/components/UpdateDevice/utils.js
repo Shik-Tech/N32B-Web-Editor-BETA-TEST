@@ -50,7 +50,8 @@ export function generateSysExFromPresetV2(currentPreset) {
             MSBFirst,
             valuesIndex,
             minValue,
-            maxValue
+            maxValue,
+            isSigned
         } = knob;
 
         return [
@@ -62,6 +63,7 @@ export function generateSysExFromPresetV2(currentPreset) {
             minValue & 0x0F,
             maxValue >> 4,
             maxValue & 0x0F,
+            +isSigned,
             START_SYSEX_MESSAGE,
             sysExMessage.length,
             ...map(sysExMessage, byte => parseInt(byte, 16))

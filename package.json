@@ -49,7 +49,7 @@
     "@fontsource/roboto": "^4.5.7",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
-    "@fortawesome/react-fontawesome": "^0.1.16",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.8.4",
     "@mui/styles": "^5.9.2",
