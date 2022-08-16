@@ -42,6 +42,7 @@ function App() {
   const [currentDevicePresetIndex, updateCurrentDevicePresetIndex] = useState(0);
   const [firmwareVersion, setFirmwareVersion] = useState();
   const [midiDeviceName, setMidiDeviceName] = useState();
+
   const knobsDataRef = useRef();
   const firmwareVersionRef = useRef();
   const appVersion = 'v2.1.0';
@@ -73,9 +74,6 @@ function App() {
       midiInput.addListener('programchange', undefined, handleProgramChange);
       midiInput.addListener('sysex', 'all', handleSysex);
       handleGetDeviceFirmwareVersion();
-      // handleLoadFromDevice();
-      // TODO: Ask to sync on first device connection
-      handleSyncRequest();
       setMidiDeviceName(midiOutput.name);
 
       return () => {
@@ -178,10 +176,6 @@ function App() {
 
   const handleProgramChange = event => {
     updateCurrentDevicePresetIndex(event.data[1]);
-  }
-
-  const handleSyncRequest = () => {
-
   }
 
   const handleSysex = event => {
