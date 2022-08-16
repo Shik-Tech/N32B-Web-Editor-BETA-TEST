@@ -59,10 +59,15 @@ function App() {
         if (WebMidi.getInputByName("N32B")) {
           setMidiInput(WebMidi.getInputByName("N32B"));
           setMidiOutput(WebMidi.getOutputByName("N32B"));
+          setDeviceIsConnected(true);
         }
       });
 
       WebMidi.addListener("disconnected", function (event) {
+        setDeviceIsConnected(false);
+        setFirmwareVersion(null);
+        updateCurrentDevicePresetIndex(0);
+        setKnobsData(null);
         setMidiInput(null);
         setMidiOutput(null);
       });
@@ -79,19 +84,10 @@ function App() {
       return () => {
         midiInput.removeListener('programchange', undefined, handleProgramChange);
         midiInput.removeListener('sysex', undefined, handleSysex);
-        setFirmwareVersion([]);
       };
-    } else {
-      setDeviceIsConnected(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [midiInput, midiOutput]);
-
-  useEffect(() => {
-    if (midiOutput) {
-      midiOutput.sendProgramChange(currentDevicePresetIndex, 1);
-    }
-  }, [currentDevicePresetIndex, midiOutput]);
+  }, [midiOutput, midiInput]);
 
   useEffect(() => {
     if (isEmpty(knobsData)) return;
@@ -106,7 +102,11 @@ function App() {
       ...prev,
       presetID: currentDevicePresetIndex
     }));
-  }, [currentDevicePresetIndex]);
+
+    if (midiOutput) {
+      midiOutput.sendProgramChange(currentDevicePresetIndex, 1);
+    }
+  }, [currentDevicePresetIndex, midiOutput]);
 
   useEffect(() => {
     if (firmwareVersion) {
@@ -115,9 +115,8 @@ function App() {
         setKnobsData(sysExPreset.knobs);
       } else {
         updatePreset(defaultPreset);
-        setKnobsData(defaultPreset.knob);
+        setKnobsData(defaultPreset.knobs);
       }
-      setDeviceIsConnected(true);
     }
   }, [firmwareVersion]);
 
@@ -151,8 +150,6 @@ function App() {
   }
 
   function handleKnobDataChange(data) {
-    console.log(data);
-
     setKnobsData(prevKnobsData => [
       ...prevKnobsData.slice(0, selectedKnobIndex),
       {
@@ -197,7 +194,7 @@ function App() {
           if (dataBytes.length > 7) {
             const knobIndex = findIndex(knobsDataRef.current, knob => knob.hardwareId === dataBytes[1]);
             if (knobIndex > -1) {
-              if (firmwareVersionRef[0] < 30) {
+              if (firmwareVersionRef.current[0] < 30) {
                 knobData = {
                   ...knobsDataRef.current[knobIndex],
                   mode: dataBytes[5],
@@ -366,10 +363,14 @@ function App() {
                 </Typography>
                 {deviceIsConnected && firmwareVersion &&
                   <Typography sx={{ pt: 1 }} variant="body2" component="div">
-                    {midiDeviceName} < Typography variant="caption" >(v.{firmwareVersion.join('.')})</Typography>
+                    {midiDeviceName} < Typography variant="caption" sx={{ color: "#808080" }} >(v.{firmwareVersion.join('.')})</Typography>
+                    {firmwareVersion[0] > 29 &&
+                      " - SysEx"
+                    }
                   </Typography>
                 }
               </Stack>
+
               {deviceIsConnected && !firmwareVersion &&
                 <Button
                   onClick={handleFirmwareUpdate}
@@ -378,6 +379,7 @@ function App() {
                   Firmware Update
                 </Button>
               }
+
               {deviceIsConnected && firmwareVersion && currentPreset &&
                 <Stack
                   direction="row"
@@ -416,6 +418,7 @@ function App() {
                   />
 
                   <SyncDevice
+                    firmwareVersion={firmwareVersion}
                     currentPreset={currentPreset}
                     currentDevicePresetIndex={currentDevicePresetIndex}
                     updateCurrentDevicePresetIndex={updateCurrentDevicePresetIndex}
@@ -423,16 +426,10 @@ function App() {
                   />
                 </Stack>
               }
-
-              {/* <PresetSelect
-                handlePresetChange={handlePresetChange}
-                handlePresetNameChange={handlePresetNameChange}
-                currentPresetIndex={currentPresetIndex}
-                presets={presets}
-              /> */}
             </Stack>
           </Toolbar>
         </AppBar>
+
         {!deviceIsConnected &&
           <ConnectDevice />
         }

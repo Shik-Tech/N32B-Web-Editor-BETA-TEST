@@ -129,7 +129,7 @@ function UpdateDevice(props) {
         });
     }
 
-    const presets = [0, 1, 2, 3, 4];
+    const presets = firmwareVersion[0] < 30 ? [0, 1, 2, 3, 4] : [0];
 
     return (
         <>
