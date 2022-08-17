@@ -8,7 +8,8 @@ import {
   UpdateDevice,
   ConnectDevice,
   Version,
-  SyncDevice
+  SyncDevice,
+  SystemMessages
 } from './components';
 import {
 } from './presetTemplates';
@@ -42,6 +43,8 @@ function App() {
   const [currentDevicePresetIndex, updateCurrentDevicePresetIndex] = useState(0);
   const [firmwareVersion, setFirmwareVersion] = useState();
   const [midiDeviceName, setMidiDeviceName] = useState();
+  const [systemMessage, setSystemMessage] = useState();
+  const [openMessageDialog, setMessageDialog] = useState(false);
 
   const knobsDataRef = useRef();
   const firmwareVersionRef = useRef();
@@ -131,7 +134,16 @@ function App() {
       const file = fileInput.current.files[0];
       reader.onload = (event => {
         const preset = JSON.parse(event.target.result);
-        setKnobsData(preset.knobs);
+        if (
+          (firmwareVersion[0] > 29 && preset.presetVersion < 3) ||
+          (firmwareVersion[0] < 30 && preset.presetVersion > 2)
+        ) {
+          setSystemMessage('The preset version is not matching the device firmware.');
+          setMessageDialog(true);
+          return;
+        } else {
+          setKnobsData(preset.knobs);
+        }
       });
       reader.readAsText(file);
     }
@@ -158,6 +170,11 @@ function App() {
       },
       ...prevKnobsData.slice(selectedKnobIndex + 1)
     ]);
+  }
+
+  const handleCloseSystemDialog = () => {
+    setMessageDialog(false);
+    setSystemMessage(null);
   }
 
   function handleReadFromDevice(data, knobIndex) {
@@ -339,6 +356,11 @@ function App() {
 
   return (
     <Container maxWidth="lg">
+      <SystemMessages
+        closeDialog={handleCloseSystemDialog}
+        showMessage={openMessageDialog}
+        message={systemMessage}
+      />
       <Box>
         <AppBar position="static" >
           <Toolbar variant="dense">

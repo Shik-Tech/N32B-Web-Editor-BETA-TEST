@@ -47,7 +47,6 @@ function SyncDEvice(props) {
             </Button>
             <Dialog
                 open={open}
-                onClose={handleClose}
             >
                 <DialogTitle>
                     <Grid

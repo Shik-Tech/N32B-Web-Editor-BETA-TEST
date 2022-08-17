@@ -8,6 +8,7 @@ import ConnectDevice from './ConnectDevice';
 import PresetSelect from './PresetSelect';
 import PresetName from './PresetName';
 import Version from './Version';
+import SystemMessages from './SystemMessages/SystemMessages';
 
 export {
     N32B,
@@ -19,5 +20,6 @@ export {
     SyncDevice,
     PresetSelect,
     PresetName,
-    Version
+    Version,
+    SystemMessages
 };

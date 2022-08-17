@@ -144,7 +144,6 @@ function UpdateDevice(props) {
             </Button>
             <Dialog
                 open={open}
-                onClose={handleClose}
             >
                 <DialogTitle>
                     <Grid
@@ -171,8 +170,8 @@ function UpdateDevice(props) {
                         severity='warning'
                         variant="filled"
                     >
-                        Please set all the knobs before updating the device. <br />
-                        This will save the device memory for long term usage.
+                        Please finish setting up all the knobs before updating the device. <br />
+                        It is recommended to do a bulk updates to preserve the device memory for long term usage.
                     </Alert>
                     <Alert
                         severity='error'
