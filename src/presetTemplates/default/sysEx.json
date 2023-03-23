@@ -2,6 +2,7 @@
     "presetVersion": 3,
     "presetID": 0,
     "presetName": "SysEx Default",
+    "thruMode": 0,
     "knobs": [
         {
             "id": 1,

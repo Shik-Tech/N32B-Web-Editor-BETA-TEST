@@ -9,10 +9,9 @@ import {
   ConnectDevice,
   Version,
   SyncDevice,
-  SystemMessages
+  SystemMessages,
+  ThruMode
 } from './components';
-import {
-} from './presetTemplates';
 import defaultPreset from './presetTemplates/default/default.json';
 import sysExPreset from './presetTemplates/default/sysEx.json';
 import logo from './components/images/shik-logo-small.png';
@@ -31,7 +30,8 @@ import UploadFileRoundedIcon from '@mui/icons-material/UploadFileRounded';
 import SimCardDownloadRoundedIcon from '@mui/icons-material/SimCardDownloadRounded';
 import { validateValueRange } from './components/UpdateDevice/utils';
 import { ModeIndexes } from './components/Editor/Modes';
-import { SEND_FIRMWARE_VERSION, SYNC_KNOBS } from './components/UpdateDevice/commands';
+import { SEND_FIRMWARE_VERSION, SET_THRU_MODE, SYNC_KNOBS } from './components/UpdateDevice/commands';
+import { ThruOptions } from './components/ThruMode/ThruOptions';
 
 function App() {
   const [deviceIsConnected, setDeviceIsConnected] = useState(false);
@@ -48,7 +48,7 @@ function App() {
 
   const knobsDataRef = useRef();
   const firmwareVersionRef = useRef();
-  const appVersion = 'v2.1.0';
+  const appVersion = 'v2.2.0';
 
   knobsDataRef.current = knobsData;
   firmwareVersionRef.current = firmwareVersion;
@@ -143,6 +143,10 @@ function App() {
           return;
         } else {
           setKnobsData(preset.knobs);
+          updatePreset(prev => ({
+            ...prev,
+            ...preset
+          }))
         }
       });
       reader.readAsText(file);
@@ -234,12 +238,20 @@ function App() {
                 const messageSize = dataBytes[9];
 
                 for (let byteIndex = 0; byteIndex < messageSize; byteIndex++) {
-                  knobData.sysExMessage.push(dataBytes[byteIndex + 10]);
+                  knobData.sysExMessage.push(dataBytes[byteIndex + 10].toString(16).padStart(2, '0'));
                 }
               }
               handleReadFromDevice(knobData, knobIndex);
             }
           }
+          break;
+
+        case SET_THRU_MODE:
+          const thruMode = dataBytes[1];
+          updatePreset(prev => ({
+            ...prev,
+            thruMode
+          }));
           break;
 
         default:
@@ -352,6 +364,13 @@ function App() {
   }
   const handleFirmwareUpdate = () => {
     window.open("https://shik.tech/firmware-update/");
+  }
+
+  function handleThruModeChange(thruMode) {
+    updatePreset(prev => ({
+      ...prev,
+      thruMode: thruMode.target.value
+    }));
   }
 
   return (
@@ -476,6 +495,16 @@ function App() {
               sx={{ flexGrow: 1 }}
               spacing={2}
             >
+              {firmwareVersion[0] > 29 &&
+                <>
+                  <ThruMode
+                    thruMode={currentPreset.thruMode}
+                    thruOptions={ThruOptions}
+                    handleThruModeChange={handleThruModeChange}
+                  />
+                  <Divider />
+                </>
+              }
               <Typography variant="h5" component="div" gutterBottom>
                 Editing Knob: <span className="currentKnob">{knobsData[selectedKnobIndex].id}</span>
               </Typography>

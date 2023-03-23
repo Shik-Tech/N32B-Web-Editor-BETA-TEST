@@ -1,5 +1,5 @@
 import { forEach, map } from 'lodash';
-import { SAVE_PRESET, SET_KNOB_MODE, START_SYSEX_MESSAGE } from './commands';
+import { SAVE_PRESET, SET_KNOB_MODE, START_SYSEX_MESSAGE, SET_THRU_MODE } from './commands';
 
 export function generateSysExFromPreset(currentPreset) {
     const messages = [];
@@ -40,7 +40,8 @@ export function generateSysExFromPreset(currentPreset) {
 export function generateSysExFromPresetV2(currentPreset) {
     const messages = [];
     const {
-        knobs
+        knobs,
+        thruMode,
     } = currentPreset;
 
     const knobMessage = map(knobs, knob => {
@@ -70,7 +71,13 @@ export function generateSysExFromPresetV2(currentPreset) {
         ];
     });
 
+    const thruModeMessage = [
+        SET_THRU_MODE,
+        thruMode
+    ]
+
     messages.push(...knobMessage);
+    messages.push(thruModeMessage);
     messages.push([SAVE_PRESET, currentPreset.presetID]);
 
     return messages;

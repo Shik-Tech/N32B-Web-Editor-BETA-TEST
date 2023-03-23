@@ -9,6 +9,7 @@ import PresetSelect from './PresetSelect';
 import PresetName from './PresetName';
 import Version from './Version';
 import SystemMessages from './SystemMessages/SystemMessages';
+import ThruMode from './ThruMode/ThruMode';
 
 export {
     N32B,
@@ -21,5 +22,6 @@ export {
     PresetSelect,
     PresetName,
     Version,
-    SystemMessages
+    SystemMessages,
+    ThruMode
 };
